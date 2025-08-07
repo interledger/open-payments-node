@@ -24,6 +24,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
+        with:
+            submodules: true      
       - uses: ./.github/workflows/env-setup
       - run: pnpm --filter openapi test
 
@@ -33,6 +35,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
+        with:
+            submodules: true
       - uses: ./.github/workflows/env-setup
       - name: Generate open-payments types
         run: pnpm --filter open-payments generate:types
