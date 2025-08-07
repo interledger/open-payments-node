@@ -84,8 +84,16 @@ export interface components {
             readonly id: string;
             /** @description A public name for the account. This should be set by the account holder with their provider to provide a hint to counterparties as to the identity of the account holder. */
             readonly publicName?: string;
-            assetCode: components["schemas"]["assetCode"];
-            assetScale: components["schemas"]["assetScale"];
+            /**
+             * Asset code
+             * @description The assetCode is a code that indicates the underlying asset. An ISO4217 currency code should be used whenever possible. The ISO4217 representation of the US Dollar is USD.
+             */
+            assetCode: string;
+            /**
+             * Asset scale
+             * @description The number of decimal places that defines the scale of the smallest divisible unit for the given asset code. It determines how an integer amount is scaled to derive the actual monetary value. For example, USD has an asset scale of 2 with the smallest unit being 0.01. An integer amount of `1000` with an `assetCode` of `USD` and `assetScale` of `2` translates to $10.00.
+             */
+            assetScale: number;
             /**
              * Format: uri
              * @description The URL of the authorization server endpoint for getting grants and access tokens for this wallet address.
@@ -133,16 +141,6 @@ export interface components {
         "did-document": {
             [key: string]: unknown;
         };
-        /**
-         * Asset code
-         * @description The assetCode is a code that indicates the underlying asset. This SHOULD be an ISO4217 currency code.
-         */
-        assetCode: string;
-        /**
-         * Asset scale
-         * @description The scale of amounts denoted in the corresponding asset code.
-         */
-        assetScale: number;
     };
     responses: never;
     parameters: never;

@@ -80,6 +80,30 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** amount */
+        amount: {
+            /**
+             * Format: uint64
+             * @description The value is an unsigned 64-bit integer amount, represented as a string.
+             */
+            value: string;
+            /**
+             * Asset code
+             * @description The assetCode is a code that indicates the underlying asset. An ISO4217 currency code should be used whenever possible. The ISO4217 representation of the US Dollar is USD.
+             */
+            assetCode: string;
+            /**
+             * Asset scale
+             * @description The number of decimal places that defines the scale of the smallest divisible unit for the given asset code. It determines how an integer amount is scaled to derive the actual monetary value. For example, USD has an asset scale of 2 with the smallest unit being 0.01. An integer amount of `1000` with an `assetCode` of `USD` and `assetScale` of `2` translates to $10.00.
+             */
+            assetScale: number;
+        };
+        /**
+         * Receiver
+         * Format: uri
+         * @description The URL of the incoming payment that is being paid.
+         */
+        receiver: string;
         /** @description A description of the rights associated with this access token. */
         access: components["schemas"]["access-item"][];
         /** @description The access associated with the access token is described using objects that each contain multiple dimensions of access. */
@@ -266,32 +290,6 @@ export interface components {
                 /** @enum {string} */
                 code?: "invalid_rotation";
             };
-        };
-        /**
-         * Receiver
-         * Format: uri
-         * @description The URL of the incoming payment that is being paid.
-         */
-        receiver: string;
-        /**
-         * Asset code
-         * @description The assetCode is a code that indicates the underlying asset. This SHOULD be an ISO4217 currency code.
-         */
-        assetCode: string;
-        /**
-         * Asset scale
-         * @description The scale of amounts denoted in the corresponding asset code.
-         */
-        assetScale: number;
-        /** amount */
-        amount: {
-            /**
-             * Format: uint64
-             * @description The value is an unsigned 64-bit integer amount, represented as a string.
-             */
-            value: string;
-            assetCode: components["schemas"]["assetCode"];
-            assetScale: components["schemas"]["assetScale"];
         };
     };
     responses: never;
