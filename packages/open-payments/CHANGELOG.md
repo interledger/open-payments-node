@@ -1,5 +1,13 @@
 # @interledger/open-payments
 
+## 7.1.2
+
+### Patch Changes
+
+- 2899cdf: Updating to v1.0.2 of the specs
+- Updated dependencies [2899cdf]
+  - @interledger/openapi@2.0.4
+
 ## 7.1.1
 
 ### Patch Changes
