@@ -45,7 +45,10 @@ export function createContext<T extends Koa.Context>(
 }
 
 const PATH = '/incoming-payments'
-const SPEC = path.resolve(__dirname, '../../../openapi/resource-server.yaml')
+const SPEC = path.resolve(
+  __dirname,
+  '../../../open-payments-specifications/openapi/resource-server.yaml'
+)
 const WALLET_ADDRESS = 'https://openpayments.dev/alice'
 
 describe('OpenAPI Validator', (): void => {

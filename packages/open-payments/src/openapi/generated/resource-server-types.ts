@@ -182,6 +182,36 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** amount */
+        amount: {
+            /**
+             * Format: uint64
+             * @description The value is an unsigned 64-bit integer amount, represented as a string.
+             */
+            value: string;
+            /**
+             * Asset code
+             * @description The assetCode is a code that indicates the underlying asset. An ISO4217 currency code should be used whenever possible. The ISO4217 representation of the US Dollar is USD.
+             */
+            assetCode: string;
+            /**
+             * Asset scale
+             * @description The number of decimal places that defines the scale of the smallest divisible unit for the given asset code. It determines how an integer amount is scaled to derive the actual monetary value. For example, USD has an asset scale of 2 with the smallest unit being 0.01. An integer amount of `1000` with an `assetCode` of `USD` and `assetScale` of `2` translates to $10.00.
+             */
+            assetScale: number;
+        };
+        /**
+         * Wallet Address
+         * Format: uri
+         * @description The URL of an Open Payments wallet address
+         */
+        walletAddress: string;
+        /**
+         * Receiver
+         * Format: uri
+         * @description The URL of the incoming payment that is being paid.
+         */
+        receiver: string;
         /**
          * Incoming Payment
          * @description An **incoming payment** resource represents a payment that will be, is currently being, or has been received by the account.
@@ -391,38 +421,6 @@ export interface components {
                 };
             };
         };
-        /**
-         * Asset code
-         * @description The assetCode is a code that indicates the underlying asset. This SHOULD be an ISO4217 currency code.
-         */
-        assetCode: string;
-        /**
-         * Asset scale
-         * @description The scale of amounts denoted in the corresponding asset code.
-         */
-        assetScale: number;
-        /** amount */
-        amount: {
-            /**
-             * Format: uint64
-             * @description The value is an unsigned 64-bit integer amount, represented as a string.
-             */
-            value: string;
-            assetCode: components["schemas"]["assetCode"];
-            assetScale: components["schemas"]["assetScale"];
-        };
-        /**
-         * Wallet Address
-         * Format: uri
-         * @description URL of a wallet address hosted by a Rafiki instance.
-         */
-        walletAddress: string;
-        /**
-         * Receiver
-         * Format: uri
-         * @description The URL of the incoming payment that is being paid.
-         */
-        receiver: string;
     };
     responses: {
         /** @description Bad Request */
