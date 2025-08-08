@@ -79,7 +79,7 @@ importers:
         specifier: workspace:2.0.3
         version: link:../http-signature-utils
       '@interledger/openapi':
-        specifier: workspace:2.0.3
+        specifier: workspace:2.0.4
         version: link:../openapi
       base64url:
         specifier: ^3.0.1

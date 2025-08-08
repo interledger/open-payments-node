@@ -1,5 +1,11 @@
 # @interledger/openapi
 
+## 2.0.4
+
+### Patch Changes
+
+- 2899cdf: Updating to v1.0.2 of the specs
+
 ## 2.0.3
 
 ### Patch Changes
