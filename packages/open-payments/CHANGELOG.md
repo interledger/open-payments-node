@@ -1,5 +1,11 @@
 # @interledger/open-payments
 
+## 7.1.3
+
+### Patch Changes
+
+- a6e1a9c: Update README
+
 ## 7.1.2
 
 ### Patch Changes
