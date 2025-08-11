@@ -24,9 +24,9 @@ The Open Payments APIs are a collection of three sub-systems:
 This repository contains contains a [NodeJS Open Payments SDK](https://github.com/interledger/open-payments-node/tree/main/packages/open-payments) to make requests via the Open Payments API, as well as TypeScript types for the API.
 
 It also contains two additional libraries:
+
 - [`@interledger/http-signature-utils`](https://github.com/interledger/open-payments/tree/main/packages/http-signature-utils) provides tools for working with [HTTP Message Signatures](https://datatracker.ietf.org/doc/draft-ietf-httpbis-message-signatures).
 - [`@interledger/openapi`](https://github.com/interledger/open-payments/tree/main/packages/openapi) exposes functionality to validate requests and responses according to a given OpenAPI 3.1 schema.
-
 
 ### New to Interledger?
 
@@ -56,14 +56,14 @@ More phone numbers: https://tel.meet/htd-eefo-ovn?hs=5
 
 ## Local Development Environment
 
-This repository contains a Git submodule, which contains the Open Payments OpenAPI specifications. 
+This repository contains a Git submodule, which contains the Open Payments OpenAPI specifications.
 After cloning, make sure to initialize and update it:
 
 ```bash
 git submodule update --init
 ```
 
-Alternatively, clone the repository with submodules in one step:  
+Alternatively, clone the repository with submodules in one step:
 
 ```bash
 git clone --recurse-submodules git@github.com:interledger/open-payments-node.git
