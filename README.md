@@ -15,25 +15,18 @@ Open Payments is an open API standard that can be implemented by account servici
 - Subscriptions
 - Invoice Payments
 
-An Open Payments server runs two sub-systems, a **resource server** which exposes APIs for performing functions against the
-underlying accounts and and **authorisation server** which exposes APIs compliant with the
-[GNAP](https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol) standard for getting grants to access the resource server
-APIs.
+The Open Payments APIs are a collection of three sub-systems:
 
-This repository hosts the Open API Specifications of the two APIs which are published along with additional documentation at
-https://openpayments.dev.
+- A **wallet address server** which exposes public information about Open Payments-enabled accounts called "wallet addresses"
+- A **resource server** which exposes APIs for performing functions against the underlying accounts
+- A **authorisation server** which exposes APIs compliant with the [GNAP](https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol) standard for getting grants to access the resource server APIs
 
-Additionally, this repository also contains three published libraries:
+This repository contains contains a [NodeJS Open Payments SDK](https://github.com/interledger/open-payments-node/tree/main/packages/open-payments) to make requests via the Open Payments API, as well as TypeScript types for the API.
 
-- [`@interledger/open-payments`](https://github.com/interledger/open-payments/tree/main/packages/open-payments) contains a NodeJS Open Payments SDK to make requests via the Open Payments API, as well as TypeScript types for the API.
+It also contains two additional libraries:
 - [`@interledger/http-signature-utils`](https://github.com/interledger/open-payments/tree/main/packages/http-signature-utils) provides tools for working with [HTTP Message Signatures](https://datatracker.ietf.org/doc/draft-ietf-httpbis-message-signatures).
 - [`@interledger/openapi`](https://github.com/interledger/open-payments/tree/main/packages/openapi) exposes functionality to validate requests and responses according to a given OpenAPI 3.1 schema.
 
-The code for the landing [page](https://openpayments.dev) is in `./docs`.
-
-## Dependencies
-
-- [Interledger](https://interledger.org/developers/rfcs/interledger-protocol/)
 
 ### New to Interledger?
 
@@ -63,6 +56,19 @@ More phone numbers: https://tel.meet/htd-eefo-ovn?hs=5
 
 ## Local Development Environment
 
+This repository contains a Git submodule, which contains the Open Payments OpenAPI specifications. 
+After cloning, make sure to initialize and update it:
+
+```bash
+git submodule update --init
+```
+
+Alternatively, clone the repository with submodules in one step:  
+
+```bash
+git clone --recurse-submodules git@github.com:interledger/open-payments-node.git
+```
+
 ### Prerequisites
 
 - [NVM](https://github.com/nvm-sh/nvm)
@@ -81,14 +87,6 @@ pnpm clean
 
 # install dependencies
 pnpm i
-```
-
-### Local Development
-
-You can preview the docs by running the command
-
-```sh
-pnpm --filter openpayments-docs start
 ```
 
 ### Useful commands
