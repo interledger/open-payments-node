@@ -2,7 +2,7 @@
 
 [Open Payments](https://openpayments.dev/) is an API standard that allows third-parties (with the account holder's consent) to initiate payments and to view the transaction history on the account holder's account.
 
-Open Payments consists of two OpenAPI specifications, a **resource server** which exposes APIs for performing functions against the underlying accounts and an **authorization server** which exposes APIs compliant with the [GNAP](https://openpayments.dev/introduction/grants/) standard for getting grants to access the resource server APIs.
+Open Payments consists of three OpenAPI specifications, a **wallet address server** which exposes public information about Open Payments-enabled accounts called "wallet addresses", a **resource server** which exposes APIs for performing functions against the underlying accounts and an **authorization server** which exposes APIs compliant with the [GNAP](https://openpayments.dev/introduction/grants/) standard for getting grants to access the resource server APIs.
 
 This package provides TypeScript & NodeJS tools for using Open Payments:
 
@@ -119,7 +119,7 @@ try {
 
 > **Note**
 >
-> A high level Open Payments flow with diagrams can be found [here](https://openpayments.dev/introduction/op-flow/).
+> A high level Open Payments flow with diagrams can be found [here](https://openpayments.dev/concepts/op-flow/).
 
 As mentioned previously, Open Payments APIs can facilitate a payment between two parties.
 
@@ -166,7 +166,7 @@ const incomingPaymentGrant = await client.grant.request(
       access: [
         {
           type: 'incoming-payment',
-          actions: ['read-all', 'create']
+          actions: ['read', 'create']
         }
       ]
     }
@@ -233,7 +233,7 @@ const quote = await client.quote.create(
 
 5. Create `OutgoingPayment` grant & start interaction flow:
 
-The final step for Online Marketplace's backend system will be to create an `OutgoingPayment` on Alice's wallet. Before this, however, Online Marketplace will need to create an outgoing payment grant, which typically requires some sort of interaction with Alice. Online Marketplace will need to facilitate this interaction with Alice (e.g. redirect her to a webpage with a dialog) to get her consent for creating an `OutgoingPayment` on her account at Cloud Nine Wallet.
+The final step for Online Marketplace's backend system will be to create an `OutgoingPayment` on Alice's wallet. Before this, however, Online Marketplace will need to create an outgoing payment grant, which requires an interaction with Alice. Online Marketplace will need to facilitate this interaction with Alice (e.g. redirect her to a webpage with a dialog) to get her consent for creating an `OutgoingPayment` on her account at Cloud Nine Wallet. Online Marketplace's backend system will provide a `nonce` in the request in order to secure the communication between itself and Alice's authorization server. See [hash verification](https://openpayments.dev/identity/hash-verification/) for more details.
 
 ```ts
 const outgoingPaymentGrant = await client.grant.request(
@@ -280,7 +280,7 @@ This request will return a response as such:
 }
 ```
 
-Alice would be then redirected to the URL specified at `interact.redirect`, where she can approve or reject the grant request.
+Alice would be then redirected to her [Identity Provider](https://openpayments.dev/identity/idp/) at the URL specified in `interact.redirect`, where she can approve or reject the grant request.
 
 > **Note**
 >

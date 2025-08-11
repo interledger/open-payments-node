@@ -8,7 +8,7 @@
     "url": "https://github.com/interledger/open-payments.git",
     "directory": "packages/open-payments"
   },
-  "homepage": "https://github.com/interledger/open-payments/tree/main/packages/open-payments#readme",
+  "homepage": "https://github.com/interledger/open-payments-node/tree/main/packages/open-payments#readme",
   "publishConfig": {
     "access": "public"
   },
