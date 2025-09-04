@@ -51,6 +51,15 @@ importers:
         specifier: ^5.8.2
         version: 5.8.2
 
+  examples/peer-to-peer:
+    dependencies:
+      '@interledger/open-payments':
+        specifier: workspace:^
+        version: link:../../packages/open-payments
+      readline:
+        specifier: ^1.3.0
+        version: 1.3.0
+
   packages/http-signature-utils:
     dependencies:
       http-message-signatures:
@@ -5319,6 +5328,10 @@ packages:
     dependencies:
       picomatch: 2.3.1
     dev: true
+
+  /readline@1.3.0:
+    resolution: {integrity: sha512-k2d6ACCkiNYz222Fs/iNze30rRJ1iIicW7JuX/7/cozvih6YCkFZH+J6mAFDVgv0dRBaAyr4jDqC95R2y4IADg==}
+    dev: false
 
   /real-require@0.2.0:
     resolution: {integrity: sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==}
