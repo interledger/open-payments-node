@@ -18,3 +18,7 @@ The script then finalizes the grant (after it's accepted interactively via the b
 5. Run `node index.js`
 6. Click on the outputted URL, to accept the outgoing payment grant.
 7. Return to the terminal, hit enter. After this, the script will create the outgoing payment and funds will move between the receiver and the sender!
+
+### Tutorial Video
+
+[![Open Payments Client Tutorial](https://img.youtube.com/vi/N9ggNr23FYc/0.jpg)](https://www.youtube.com/watch?v=N9ggNr23FYc)
