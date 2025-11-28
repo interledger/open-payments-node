@@ -14,7 +14,13 @@ import {
   isFinalizedGrant
 } from '@interledger/open-payments'
 import readline from 'readline/promises'
+import express from 'express'
+
+let callbackServerPort
+let interactRef
 ;(async () => {
+  await startCallbackServer()
+
   // Client configuration
   const PRIVATE_KEY_PATH = 'private.key'
   const KEY_ID = ''
@@ -152,15 +158,14 @@ import readline from 'readline/promises'
         ]
       },
       interact: {
-        start: ['redirect']
-        // finish: {
-        //   method: "redirect",
-        //   // This is where you can (optionally) redirect a user to after going through interaction.
-        //   // Keep in mind, you will need to parse the interact_ref in the resulting interaction URL,
-        //   // and pass it into the grant continuation request.
-        //   uri: "https://example.com",
-        //   nonce: crypto.randomUUID(),
-        // },
+        start: ['redirect'],
+        finish: {
+          method: 'redirect',
+          // The uri is where the user is redirected to after going through interaction with their wallet/identity provider. For this example, we use a temporary HTTP server to handle the redirect.
+          uri: `http://localhost:${callbackServerPort}`,
+          // The nonce is used as part of hash verification when redirecting to the uri. Please visit https://openpayments.dev/identity/hash-verification/ for more details.
+          nonce: crypto.randomUUID()
+        }
       }
     }
   )
@@ -184,10 +189,13 @@ import readline from 'readline/promises'
     '\nThere was an error continuing the grant. You probably have not accepted the grant at the url (or it has already been used up, in which case, rerun the script).'
 
   try {
-    finalizedOutgoingPaymentGrant = await client.grant.continue({
-      url: outgoingPaymentGrant.continue.uri,
-      accessToken: outgoingPaymentGrant.continue.access_token.value
-    })
+    finalizedOutgoingPaymentGrant = await client.grant.continue(
+      {
+        url: outgoingPaymentGrant.continue.uri,
+        accessToken: outgoingPaymentGrant.continue.access_token.value
+      },
+      { interact_ref: interactRef }
+    )
   } catch (err) {
     if (err instanceof OpenPaymentsClientError) {
       console.log(grantContinuationErrorMessage)
@@ -229,3 +237,32 @@ import readline from 'readline/promises'
 
   process.exit()
 })()
+
+/**
+ * Starts a temporary local HTTP server to handle Open Payments Auth Server callback redirects.
+ */
+async function startCallbackServer() {
+  let server
+  const app = express()
+  app.use(express.json())
+
+  app.get('/', async (req, res) => {
+    interactRef = req.query['interact_ref']
+
+    res.send(`
+        <html>
+          <body style="font-family: monospace; padding: 2rem; text-align: center;">
+            <img src="https://raw.githubusercontent.com/interledger/open-payments/main/docs/public/img/logo.svg" width="300" alt="Open Payments" style="max-width: 100%; margin-bottom: 2rem;">  
+            <h1>Authentication successful</h1>
+            <p>You can close this window and return to your terminal.</p>
+          </body>
+        </html>
+      `)
+
+    server.close()
+  })
+
+  server = app.listen(0, () => {
+    callbackServerPort = server.address().port
+  })
+}
