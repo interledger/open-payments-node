@@ -15,12 +15,7 @@ import {
 } from '@interledger/open-payments'
 import readline from 'readline/promises'
 import express from 'express'
-
-let callbackServerPort
-let interactRef
 ;(async () => {
-  await startCallbackServer()
-
   // Client configuration
   const PRIVATE_KEY_PATH = 'private.key'
   const KEY_ID = ''
@@ -257,7 +252,6 @@ async function getInteractRefFromTempCallbackServer(port) {
   return new Promise((resolve) => {
     let server
     const app = express()
-    app.use(express.json())
 
     app.get('/', async (req, res) => {
       const interactRef = req.query['interact_ref']
