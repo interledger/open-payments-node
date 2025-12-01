@@ -87,6 +87,9 @@ let interactRef
         assetCode: receivingWalletAddress.assetCode,
         assetScale: receivingWalletAddress.assetScale,
         value: '1000'
+      },
+      metadata: {
+        description: 'From peer-to-peer example script'
       }
     }
   )
@@ -232,7 +235,10 @@ let interactRef
     },
     {
       walletAddress: sendingWalletAddress.id,
-      quoteId: quote.id
+      quoteId: quote.id,
+      metadata: {
+        description: 'Sent from peer-to-peer example script'
+      }
     }
   )
 
