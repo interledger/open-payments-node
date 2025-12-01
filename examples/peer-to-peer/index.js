@@ -134,6 +134,8 @@ let interactRef
 
   console.log('\nStep 5: got quote on sending wallet address', quote)
 
+  const callbackServerPort = 3999
+
   // Step 7: Start the grant process for the outgoing payments.
   // This is an interactive grant: the user (in this case, you) will need to accept the grant by navigating to the outputted link.
   const outgoingPaymentGrant = await client.grant.request(
@@ -178,6 +180,10 @@ let interactRef
     'Please navigate to the following URL, to accept the interaction from the sending wallet:'
   )
   console.log(outgoingPaymentGrant.interact.redirect)
+
+  const interactRef = await getInteractRefFromTempCallbackServer(
+    callbackServerPort
+  )
 
   await readline
     .createInterface({ input: process.stdin, output: process.stdout })
@@ -239,30 +245,38 @@ let interactRef
 })()
 
 /**
- * Starts a temporary local HTTP server to handle Open Payments Auth Server callback redirects.
+ * Starts a temporary local HTTP server to handle Open Payments Auth Server callback redirects, and return the resulting interact ref.
  */
-async function startCallbackServer() {
-  let server
-  const app = express()
-  app.use(express.json())
+async function getInteractRefFromTempCallbackServer(port) {
+  return new Promise((resolve) => {
+    let server
+    const app = express()
+    app.use(express.json())
 
-  app.get('/', async (req, res) => {
-    interactRef = req.query['interact_ref']
+    app.get('/', async (req, res) => {
+      const interactRef = req.query['interact_ref']
 
-    res.send(`
-        <html>
-          <body style="font-family: monospace; padding: 2rem; text-align: center;">
-            <img src="https://raw.githubusercontent.com/interledger/open-payments/main/docs/public/img/logo.svg" width="300" alt="Open Payments" style="max-width: 100%; margin-bottom: 2rem;">  
-            <h1>Authentication successful</h1>
-            <p>You can close this window and return to your terminal.</p>
-          </body>
-        </html>
-      `)
+      res.send(`
+          <html>
+            <body style="font-family: monospace; padding: 2rem; text-align: center;">
+              <img src="https://raw.githubusercontent.com/interledger/open-payments/main/docs/public/img/logo.svg" width="300" alt="Open Payments" style="max-width: 100%; margin-bottom: 2rem;">  
+              <h1>Authentication successful</h1>
+              <p>You can close this window and return to your terminal.</p>
+            </body>
+          </html>
+        `)
 
-    server.close()
-  })
+      server.close()
+      resolve(interactRef)
+    })
 
-  server = app.listen(0, () => {
-    callbackServerPort = server.address().port
+    server = app.listen(port).on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.error(
+          `Port ${port} is already in use, please select a new port for the callback server.`
+        )
+        process.exit(1)
+      }
+    })
   })
 }
