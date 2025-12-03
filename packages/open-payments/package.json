@@ -26,6 +26,7 @@
     "generate:resource-server-types": "openapi-typescript src/openapi/specs/resource-server.yaml --output src/openapi/generated/resource-server-types.ts",
     "generate:wallet-address-server-types": "openapi-typescript src/openapi/specs/wallet-address-server.yaml --output src/openapi/generated/wallet-address-server-types.ts",
     "generate:types": "pnpm generate:auth-server-types && pnpm generate:resource-server-types && pnpm generate:wallet-address-server-types",
+    "generate:docs": "typedoc",
     "prepack": "pnpm build",
     "test": "jest --passWithNoTests"
   },
@@ -33,7 +34,9 @@
     "@types/node": "^20.12.7",
     "@types/uuid": "^9.0.0",
     "nock": "14.0.0-beta.5",
-    "openapi-typescript": "^7.6.1"
+    "openapi-typescript": "^7.6.1",
+    "typedoc": "0.27.9",
+    "typedoc-plugin-markdown": "4.4.2"
   },
   "dependencies": {
     "@interledger/http-signature-utils": "workspace:2.0.3",
