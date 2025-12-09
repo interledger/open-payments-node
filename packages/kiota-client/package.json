@@ -1,0 +1,36 @@
+{
+  "name": "@interledger/kiota-client",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Provides utilities for working with HTTP signatures",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/interledger/open-payments.git",
+    "directory": "packages/kiota-client"
+  },
+  "homepage": "https://github.com/interledger/open-payments/tree/main/packages/kiota-client#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Interledger Tech Team <tech@interledger.org>",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "pnpm clean && tsc --build tsconfig.json",
+    "clean": "rm -fr dist/",
+    "test": "jest --passWithNoTests --maxWorkers=50%",
+    "prepack": "pnpm build"
+  },
+  "dependencies": {
+    "@microsoft/kiota-abstractions": "1.0.0-preview.99",
+    "@microsoft/kiota-bundle": "1.0.0-preview.99",
+    "@microsoft/kiota-http-fetchlibrary": "1.0.0-preview.99",
+    "@microsoft/kiota-serialization-form": "1.0.0-preview.99",
+    "@microsoft/kiota-serialization-json": "1.0.0-preview.99",
+    "@microsoft/kiota-serialization-multipart": "1.0.0-preview.99",
+    "@microsoft/kiota-serialization-text": "1.0.0-preview.99"
+  }
+}
