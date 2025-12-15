@@ -22,7 +22,8 @@
     "build": "pnpm clean && tsc --build tsconfig.json",
     "clean": "rm -fr dist/",
     "test": "jest --passWithNoTests --maxWorkers=50%",
-    "prepack": "pnpm build"
+    "prepack": "pnpm build",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@microsoft/kiota-abstractions": "1.0.0-preview.99",

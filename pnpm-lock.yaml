@@ -120,9 +120,6 @@ importers:
       '@interledger/openapi':
         specifier: workspace:2.0.4
         version: link:../openapi
-      '@microsoft/kiota-bundle':
-        specifier: 1.0.0-preview.99
-        version: 1.0.0-preview.99
       base64url:
         specifier: ^3.0.1
         version: 3.0.1
