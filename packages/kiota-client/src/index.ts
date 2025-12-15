@@ -1,6 +1,7 @@
 import {
-  AnonymousAuthenticationProvider,
-  RequestOption
+  AuthenticationProvider,
+  RequestOption,
+  RequestInformation
 } from '@microsoft/kiota-abstractions'
 import {
   FetchRequestAdapter,
@@ -12,7 +13,7 @@ import { createWalletAddressClient } from './wallet-address/walletAddressClient.
 import { createAuthClient } from './auth/authClient.js'
 import { createResourceClient } from './resource/resourceClient.js'
 
-// Adding middleware:
+// Sample middleware
 export class LogRequestMiddleware implements Middleware {
   next: Middleware | undefined
   public async execute(
@@ -23,25 +24,62 @@ export class LogRequestMiddleware implements Middleware {
     console.log(`Request middleware`, { url, requestInit })
     return this.next?.execute(
       url,
-      requestInit as RequestInit,
+      requestInit,
       requestOptions
     ) as Promise<Response>
   }
 }
 
+// Sample GNAP Authentication Provider
+class GNAPAuthenticationProvider implements AuthenticationProvider {
+  constructor(private privateKey: string, private keyId: string) {}
+
+  async authenticateRequest(
+    request: RequestInformation,
+    additionalAuthenticationContext?: Record<string, unknown>
+  ): Promise<void> {
+    if (!request.headers) {
+      return
+    }
+
+    const requestOptions = request.getRequestOptions()
+    const gnapTokenOption = requestOptions[0]
+    if (gnapTokenOption) {
+      request.headers.add('Authorization', `GNAP ${gnapTokenOption.getKey()}`)
+    }
+
+    // Sign requests with http-signatures (simplified example)
+    request.headers.add('Signature', 'signature-value')
+    request.headers.add('Signature-Input', 'signature-input')
+    request.headers.add('Content-Digest', 'signature-value')
+  }
+}
+
+export class GNAPTokenOption implements RequestOption {
+  constructor(public readonly token: string) {}
+
+  getKey(): string {
+    return this.token
+  }
+}
+
+// Adding middleware to log requests
 const handlers = MiddlewareFactory.getDefaultMiddlewares()
-handlers.push(new LogRequestMiddleware())
+handlers.unshift(new LogRequestMiddleware())
 
 // Creating the HTTP client with the middleware
 const httpClient = KiotaClientFactory.create(undefined, handlers)
 
-const authProvider = new AnonymousAuthenticationProvider()
+// Create the authentication provider
+const authProvider = new GNAPAuthenticationProvider('private-key', 'key-id') // or new AnonymousAuthenticationProvider()
+
+// Create request adapter
 const adapter = new FetchRequestAdapter(
   authProvider,
   undefined,
   undefined,
   httpClient
-)
+) // or simply new FetchRequestAdapter(authProvider)
 
 // Create the clients
 const walletAddressClient = createWalletAddressClient(adapter)
@@ -50,8 +88,9 @@ const authClient = createAuthClient(adapter)
 
 async function main(): Promise<void> {
   try {
+    // Fetching wallet address
     const walletAddress = await walletAddressClient
-      .withUrl('https://ilp.interledger-test.dev/client-tutorial') // setting the "base URL"
+      .withUrl('https://ilp.interledger-test.dev/client-tutorial')
       .get()
 
     // All properties are optional
@@ -62,40 +101,68 @@ async function main(): Promise<void> {
     ) {
       throw new Error('Wallet address not found')
     }
-    console.log(walletAddress)
 
-    const incomingPaymentUrl =
-      'https://ilp.interledger-test.dev/f537937b-7016-481b-b655-9f0d1014822c/incoming-payments/e55695ed-f951-47a0-b67d-1fdd02e21d8e'
+    console.log({ walletAddress })
 
-    //What I would ideally like to do:
-    const incomingPayment = await resourceClient
-      .withUrl(walletAddress.resourceServer)
-      .incomingPayments.byId(parseUUIDFromUrl(incomingPaymentUrl))
-      .get()
+    // Fetching incoming payment in different ways
+    const incomingPaymentId = 'e55695ed-f951-47a0-b67d-1fdd02e21d8e'
+    const incomingPaymentUrl = `https://ilp.interledger-test.dev/f537937b-7016-481b-b655-9f0d1014822c/incoming-payments/${incomingPaymentId}`
 
-    // only way to properly get incomingPayment
-    const incomingPayment = await resourceClient
+    const incomingPaymentWithUrl = await resourceClient
       .withUrl(incomingPaymentUrl)
       .incomingPayments.byId('doesnt matter') // byId value is ignored when using withUrl()
       .get()
 
-    console.log(incomingPayment)
+    console.log({ incomingPaymentWithUrl })
 
-    const grant = await authClient.withUrl(walletAddress.authServer).post({
+    adapter.baseUrl = walletAddress.resourceServer
+    const incomingPaymentWithBaseUrlSet = await resourceClient.incomingPayments
+      .byId(incomingPaymentId)
+      .get()
+
+    console.log({ incomingPaymentWithUrl })
+
+    // Creating incoming payment (doesn't work, just for example)
+    const newIncomingPayment = await resourceClient.incomingPayments.post(
+      {
+        incomingAmount: {
+          assetCode: walletAddress.assetCode,
+          assetScale: walletAddress.assetScale,
+          value: '1000'
+        }
+      },
+      { options: [new GNAPTokenOption('some-gnap-token')] }
+    )
+
+    // Getting grant (doesn't work, just for example)
+    adapter.baseUrl = walletAddress.authServer
+    const grant = await authClient.post({
       accessToken: {
         access: [
           {
-            type: 'incoming-payment',
-            actions: ['create', 'read', 'list', 'complete']
+            type: 'outgoing-payment',
+            actions: ['create', 'read'],
+            identifier: 'specific-outgoing-payment-id',
+            limits: {
+              // For limits, the `debitAmount` and `receiveAmount` are mutually exclusive
+              debitAmount: {
+                assetCode: walletAddress.assetCode,
+                assetScale: walletAddress.assetScale,
+                value: '1000'
+              },
+              receiveAmount: {
+                assetCode: walletAddress.assetCode,
+                assetScale: walletAddress.assetScale,
+                value: '2000'
+              }
+            }
           }
         ]
       },
       client: 'https://ilp.interledger-test.dev/client-tutorial'
     })
-
-    console.log(grant)
   } catch (err) {
-    console.error(err)
+    // do nothing, just for demo
   }
 }
 
