@@ -42,11 +42,17 @@ class GNAPAuthenticationProvider implements AuthenticationProvider {
       return
     }
 
-    // Basic example of adding GNAP token from request options
-    request.headers.add(
-      'Authorization',
-      `GNAP ${request.getRequestOptions()[0].getKey()}`
-    )
+    // Basic example of adding access token from request options
+    const accessTokenRequestOption = Object.values(
+      request.getRequestOptions()
+    )[0]
+
+    if (accessTokenRequestOption) {
+      request.headers.add(
+        'Authorization',
+        `GNAP ${accessTokenRequestOption.getKey()}`
+      )
+    }
 
     // Here we would sign the request & add HTTP Message Signature headers
     request.headers.add('Signature', '...')
@@ -71,7 +77,7 @@ handlers.unshift(new LogRequestMiddleware())
 const httpClient = KiotaClientFactory.create(undefined, handlers)
 
 // Create the authentication provider
-const authProvider = new GNAPAuthenticationProvider('private-key', 'key-id') // or new AnonymousAuthenticationProvider()
+const authProvider = new GNAPAuthenticationProvider('privateKey', 'keyId') // or new AnonymousAuthenticationProvider()
 
 // Create request adapter
 const adapter = new FetchRequestAdapter(
@@ -131,7 +137,7 @@ async function main(): Promise<void> {
           value: '1000'
         }
       },
-      { options: [new GNAPTokenOption('some-gnap-token')] }
+      { options: [new GNAPTokenOption('someAccessToken')] }
     )
 
     // Getting grant (doesn't work, just for example)
@@ -142,9 +148,9 @@ async function main(): Promise<void> {
           {
             type: 'outgoing-payment',
             actions: ['create', 'read'],
-            identifier: 'specific-outgoing-payment-id',
+            identifier: 'someWalletAddressUrl',
             limits: {
-              // For limits, the `debitAmount` and `receiveAmount` are mutually exclusive
+              // For limits, the `debitAmount` and `receiveAmount` are actually mutually exclusive
               debitAmount: {
                 assetCode: walletAddress.assetCode,
                 assetScale: walletAddress.assetScale,
@@ -165,5 +171,4 @@ async function main(): Promise<void> {
     // do nothing, just for demo
   }
 }
-
 main()
