@@ -1,23 +1,23 @@
-### Kiota Client Experiment
+# Kiota Client Exploration
 
-https://learn.microsoft.com/en-us/openapi/kiota/quickstarts/typescript
-
-
-#### Process
-
-##### Installation
+This repository used Kiota to generate three clients from our OpenAPI specification: 
 
 ```
-brew install kiota
+kiota generate -l typescript -d open-payments-specifications/openapi/auth-server.yaml -c authClient -o ./packages/kiota-client/auth/src 
+
+kiota generate -l typescript -d open-payments-specifications/openapi/wallet-address-server.yaml -c walletAddressClient -o ./packages/kiota-client/wallet-address/src 
+
+kiota generate -l typescript -d open-payments-specifications/openapi/resource-server.yaml -c resourceClient -o ./packages/kiota-client/resource/src 
 ```
 
-##### Dependencies
+In `index.ts` you will find how these clients can be imported, used, and customized. The script does not work for authenticated requests, it is simply to give an example of usage.
 
-While the guide say to use `npm install @microsoft/kiota-bundle`, I had issues with package resolution in our monorepo setup. Instead, I installed the dependencies separately. Check `package.json` for the exact versions.
+## Usage
 
-
-##### Generation
 ```
-kiota generate -l typescript -d open-payments-specifications/openapi/auth-server.yaml -c authClient -o ./packages/kiota-client/auth-server/src 
+pnpm install
 ```
 
+```
+pnpm build && pnpm start
+```
