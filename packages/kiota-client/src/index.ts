@@ -42,16 +42,16 @@ class GNAPAuthenticationProvider implements AuthenticationProvider {
       return
     }
 
-    const requestOptions = request.getRequestOptions()
-    const gnapTokenOption = requestOptions[0]
-    if (gnapTokenOption) {
-      request.headers.add('Authorization', `GNAP ${gnapTokenOption.getKey()}`)
-    }
+    // Basic example of adding GNAP token from request options
+    request.headers.add(
+      'Authorization',
+      `GNAP ${request.getRequestOptions()[0].getKey()}`
+    )
 
-    // Sign requests with http-signatures (simplified example)
-    request.headers.add('Signature', 'signature-value')
-    request.headers.add('Signature-Input', 'signature-input')
-    request.headers.add('Content-Digest', 'signature-value')
+    // Here we would sign the request & add HTTP Message Signature headers
+    request.headers.add('Signature', '...')
+    request.headers.add('Signature-Input', '...')
+    request.headers.add('Content-Digest', '...')
   }
 }
 
