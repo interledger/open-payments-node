@@ -10,14 +10,5 @@ kiota generate -l typescript -d open-payments-specifications/openapi/wallet-addr
 kiota generate -l typescript -d open-payments-specifications/openapi/resource-server.yaml -c resourceClient -o ./packages/kiota-client/resource/src 
 ```
 
-In `index.ts` you will find how these clients can be imported, used, and customized. The script does not work for authenticated requests, it is simply to give an example of usage.
+In `src/index.ts` you will find how these clients can be imported, used, and customized. The script does not work for authenticated requests, it is simply to give an example of usage. After `pnpm install`, the script can be ran using `pnpm build && pnpm start`, provided you have ran `pnpm install`.
 
-## Usage
-
-```
-pnpm install
-```
-
-```
-pnpm build && pnpm start
-```
