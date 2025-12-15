@@ -112,7 +112,7 @@ async function main(): Promise<void> {
 
     // Fetching incoming payment in different ways
     const incomingPaymentId = 'e55695ed-f951-47a0-b67d-1fdd02e21d8e'
-    const incomingPaymentUrl = `https://ilp.interledger-test.dev/f537937b-7016-481b-b655-9f0d1014822c/incoming-payments/${incomingPaymentId}`
+    const incomingPaymentUrl = `${walletAddress.resourceServer}/incoming-payments/${incomingPaymentId}`
 
     const incomingPaymentWithUrl = await resourceClient
       .withUrl(incomingPaymentUrl)
@@ -126,7 +126,7 @@ async function main(): Promise<void> {
       .byId(incomingPaymentId)
       .get()
 
-    console.log({ incomingPaymentWithUrl })
+    console.log({ incomingPaymentWithBaseUrlSet })
 
     // Creating incoming payment (doesn't work, just for example)
     const newIncomingPayment = await resourceClient.incomingPayments.post(
