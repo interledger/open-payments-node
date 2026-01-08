@@ -6,6 +6,7 @@ import {
   GrantRequest,
   GrantContinuationRequest,
   OutgoingPayment,
+  OutgoingPaymentGrantSpentAmounts,
   OutgoingPaymentPaginationResult,
   WalletAddress,
   JWK,
@@ -205,6 +206,22 @@ export const mockOutgoingPaymentWithSpentAmounts = (
     value: '10'
   },
   grantSpentReceiveAmount: {
+    assetCode: 'USD',
+    assetScale: 2,
+    value: '10'
+  },
+  ...overrides
+})
+
+export const mockOutgoingPaymentGrantSpentAmounts = (
+  overrides?: Partial<OutgoingPaymentGrantSpentAmounts>
+): OutgoingPaymentGrantSpentAmounts => ({
+  spentDebitAmount: {
+    assetCode: 'USD',
+    assetScale: 2,
+    value: '10'
+  },
+  spentReceiveAmount: {
     assetCode: 'USD',
     assetScale: 2,
     value: '10'
