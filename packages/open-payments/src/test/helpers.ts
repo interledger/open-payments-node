@@ -18,7 +18,8 @@ import {
   IlpPaymentMethod,
   PublicIncomingPayment,
   DIDDocument,
-  OutgoingPaymentWithSpentAmounts
+  OutgoingPaymentWithSpentAmounts,
+  Subject
 } from '../types'
 import { v4 as uuid } from 'uuid'
 import { ResponseValidator, ValidationError } from '@interledger/openapi'
@@ -230,6 +231,16 @@ export const mockOutgoingPaymentPaginationResult = (
     }
   }
 }
+
+export const mockSubject = (overrides?: Partial<Subject>): Subject => ({
+  sub_ids: [
+    {
+      id: 'https://example.com/.well-known/pay',
+      format: 'uri'
+    }
+  ],
+  ...overrides
+})
 
 export const mockPendingGrant = (
   overrides?: Partial<PendingGrant>

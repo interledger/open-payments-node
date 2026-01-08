@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createGrantRoutes } from './grant'
 import { OpenAPI, HttpMethod } from '@interledger/openapi'
-import { createTestDeps, mockGrantRequest } from '../test/helpers'
+import { createTestDeps, mockGrantRequest, mockSubject } from '../test/helpers'
 import * as requestors from './requests'
 import { v4 as uuid } from 'uuid'
 import { getAuthServerOpenAPI } from '../openapi'
@@ -136,6 +136,101 @@ describe('grant', (): void => {
           }
         }
       )
+
+      test('POST grant request with subject field only', async (): Promise<void> => {
+        const postSpy = jest.spyOn(requestors, 'post')
+        const subjectOnlyRequest: Omit<GrantRequest, 'client'> = {
+          subject: mockSubject(),
+          interact: {
+            start: ['redirect'],
+            finish: {
+              method: 'redirect',
+              uri: 'http://localhost:3030/mock-idp/fake-client',
+              nonce: '456'
+            }
+          }
+        }
+
+        await createGrantRoutes({
+          openApi,
+          client,
+          ...deps
+        }).request({ url }, subjectOnlyRequest)
+
+        expect(postSpy).toHaveBeenCalledWith(
+          deps,
+          {
+            url,
+            body: {
+              ...subjectOnlyRequest,
+              client
+            }
+          },
+          true
+        )
+      })
+
+      test('POST grant request with both access_token and subject', async (): Promise<void> => {
+        const postSpy = jest.spyOn(requestors, 'post')
+        const combinedRequest: Omit<GrantRequest, 'client'> = {
+          access_token: {
+            access: [
+              {
+                type: 'quote',
+                actions: ['create', 'read']
+              }
+            ]
+          },
+          subject: mockSubject(),
+          interact: {
+            start: ['redirect'],
+            finish: {
+              method: 'redirect',
+              uri: 'http://localhost:3030/mock-idp/fake-client',
+              nonce: '456'
+            }
+          }
+        }
+
+        await createGrantRoutes({
+          openApi,
+          client,
+          ...deps
+        }).request({ url }, combinedRequest)
+
+        expect(postSpy).toHaveBeenCalledWith(
+          deps,
+          {
+            url,
+            body: {
+              ...combinedRequest,
+              client
+            }
+          },
+          true
+        )
+      })
+
+      test('POST grant request with neither access_token nor subject fails', async (): Promise<void> => {
+        const emptyRequest: any = {
+          interact: {
+            start: ['redirect'],
+            finish: {
+              method: 'redirect',
+              uri: 'http://localhost:3030/mock-idp/fake-client',
+              nonce: '456'
+            }
+          }
+        }
+
+        await expect(
+          createGrantRoutes({
+            openApi,
+            client,
+            ...deps
+          }).request({ url }, emptyRequest)
+        ).rejects.toThrow('Invalid Grant Request')
+      })
     })
 
     describe('cancel', () => {

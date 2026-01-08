@@ -20,7 +20,8 @@ export {
   AccessType,
   AccessAction,
   AccessToken,
-  AccessItem
+  AccessItem,
+  Subject
 } from './types'
 
 export {
@@ -52,5 +53,6 @@ export {
   mockContinuationRequest,
   mockGrantRequest,
   mockGrant,
-  mockPendingGrant
+  mockPendingGrant,
+  mockSubject
 } from './test/helpers'

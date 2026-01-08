@@ -60,20 +60,30 @@ export const createGrantRoutes = (deps: GrantRouteDeps): GrantRoutes => {
       { url }: UnauthenticatedResourceRequestArgs,
       args: Omit<GrantRequest, 'client'>
     ) => {
-      const outgoingPaymentAccess = args.access_token.access.find(
-        (el) => el.type === 'outgoing-payment'
-      )
-      if (
-        (outgoingPaymentAccess?.limits as AccessOutgoingWithDebitAmount)
-          ?.debitAmount &&
-        (outgoingPaymentAccess?.limits as AccessOutgoingWithReceiveAmount)
-          ?.receiveAmount
-      ) {
+      if (!args.access_token && !args.subject) {
         throw new OpenPaymentsClientError('Invalid Grant Request', {
           description:
-            'Only one of "debitAmount" or "receiveAmount" may be specified.'
+            'Grant request must include at least one of "access_token" or "subject".'
         })
       }
+
+      if (args.access_token) {
+        const outgoingPaymentAccess = args.access_token.access.find(
+          (el) => el.type === 'outgoing-payment'
+        )
+        if (
+          (outgoingPaymentAccess?.limits as AccessOutgoingWithDebitAmount)
+            ?.debitAmount &&
+          (outgoingPaymentAccess?.limits as AccessOutgoingWithReceiveAmount)
+            ?.receiveAmount
+        ) {
+          throw new OpenPaymentsClientError('Invalid Grant Request', {
+            description:
+              'Only one of "debitAmount" or "receiveAmount" may be specified.'
+          })
+        }
+      }
+
       return post(
         baseDeps,
         {

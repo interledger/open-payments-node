@@ -81,21 +81,39 @@ export type CreateQuoteArgs =
 
 export const getASPath = <P extends keyof ASPaths>(path: P): string =>
   path as string
+
+export type Subject = ASComponents['schemas']['subject']
+
 export type NonInteractiveGrantRequest = {
   access_token: ASOperations['post-request']['requestBody']['content']['application/json']['access_token']
   client: ASOperations['post-request']['requestBody']['content']['application/json']['client']
 }
+
+type BaseGrantRequest = {
+  client: ASOperations['post-request']['requestBody']['content']['application/json']['client']
+  interact?: ASOperations['post-request']['requestBody']['content']['application/json']['interact']
+}
+
+type GrantRequestWithAccessToken = BaseGrantRequest & {
+  access_token: { access: GrantRequestAccessItem[] }
+  subject?: Subject
+}
+
+type GrantRequestWithSubject = BaseGrantRequest & {
+  access_token?: { access: GrantRequestAccessItem[] }
+  subject: Subject
+}
+
+export type GrantRequest = GrantRequestWithAccessToken | GrantRequestWithSubject
+
 export type Grant = {
   access_token: ASComponents['schemas']['access_token']
   continue: ASComponents['schemas']['continue']
+  subject?: Subject
 }
 export type GrantContinuation = {
   continue: ASComponents['schemas']['continue']
-}
-export type GrantRequest = {
-  access_token: { access: GrantRequestAccessItem[] }
-  client: ASOperations['post-request']['requestBody']['content']['application/json']['client']
-  interact?: ASOperations['post-request']['requestBody']['content']['application/json']['interact']
+  subject?: Subject
 }
 
 export type GrantContinuationRequest =
