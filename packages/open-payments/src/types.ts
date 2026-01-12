@@ -109,13 +109,12 @@ type GrantRequestWithSubject = BaseGrantRequest & {
 export type GrantRequest = GrantRequestWithAccessToken | GrantRequestWithSubject
 
 export type Grant = {
-  access_token: ASComponents['schemas']['access_token']
+  access_token?: ASComponents['schemas']['access_token']
   continue: ASComponents['schemas']['continue']
   subject?: Subject
 }
 export type GrantContinuation = {
   continue: ASComponents['schemas']['continue']
-  subject?: Subject
 }
 
 export type GrantContinuationRequest =
@@ -137,9 +136,21 @@ export const isPendingGrant = (
   grant: PendingGrant | Grant
 ): grant is PendingGrant => !!(grant as PendingGrant).interact
 
+/**
+ * @deprecated Use isFinalizedGrantWithAccessToken or isFinalizedGrantWithSubject instead.
+ */
 export const isFinalizedGrant = (
   grant: GrantContinuation | Grant
 ): grant is Grant => !!(grant as Grant).access_token
+
+export const isFinalizedGrantWithAccessToken = (
+  grant: GrantContinuation | Grant
+): grant is Grant & { access_token: ASComponents['schemas']['access_token'] } =>
+  !!(grant as Grant).access_token
+
+export const isFinalizedGrantWithSubject = (
+  grant: GrantContinuation | Grant
+): grant is Grant & { subject: Subject } => !!(grant as Grant).subject
 
 export type AccessIncomingActions =
   ASComponents['schemas']['access-incoming']['actions']
