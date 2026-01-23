@@ -291,7 +291,7 @@ Alice would be then redirected to her [Identity Provider](https://openpayments.d
 Once Alice approves the grant request at Cloud Nine Wallet (or the Identity Provider that Cloud Nine Wallet has configured), she will be redirected to the URL specified in the original outgoing payment grant request, with an `interact_ref` in the URL. This `interact_ref` can be used to finalize the outgoing payment grant request:
 
 ```ts
-const finalizedOutgoingPaymentGrant = await client.grant.continue(
+const continueGrantResult = await client.grant.continue(
   {
     url: outgoingPaymentGrant.continue.uri,
     accessToken: outgoingPaymentGrant.continue.access_token.value
@@ -300,7 +300,21 @@ const finalizedOutgoingPaymentGrant = await client.grant.continue(
 )
 ```
 
-7. Create `OutgoingPayment`:
+7. Verify grant finalization:
+
+Use the `isFinalizedGrantWithAccessToken` type guard to check if the grant was successfully finalized with an access token:
+
+```ts
+import { isFinalizedGrantWithAccessToken } from '@interledger/open-payments'
+
+if (!isFinalizedGrantWithAccessToken(continueGrantResult)) {
+  throw new Error('Expected finalized grant with access token')
+}
+
+const finalizedOutgoingPaymentGrant = continueGrantResult
+```
+
+8. Create `OutgoingPayment`:
 
 Once the grant interaction flow has finished, and Alice has consented to the payment, Online Marketplace can create the `OutgoingPayment` on her account:
 
