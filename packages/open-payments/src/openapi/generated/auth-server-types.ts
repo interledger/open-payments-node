@@ -167,15 +167,30 @@ export interface components {
         };
         /**
          * client
-         * @description Wallet address of the client instance that is making this request.
+         * @description Client identification for grant requests.
          *
          *     When sending a non-continuation request to the AS, the client instance MUST identify itself by including the client field of the request and by signing the request.
          *
+         *     Can be either:
+         *     - A wallet address string (backwards compatible format)
+         *     - An object with either `jwk` (for directed identity) or `walletAddress` (mutually exclusive)
+         *
+         *     When using a wallet address string or the `walletAddress` property:
          *     A JSON Web Key Set document, including the public key that the client instance will use to protect this request and any continuation requests at the AS and any user-facing information about the client instance used in interactions, MUST be available at the wallet address + `/jwks.json` url.
+         *
+         *     When using the `jwk` property (directed identity approach):
+         *     The client instance provides its public key directly in the request, eliminating the need for the AS to fetch it from a wallet address. This approach enhances privacy by not requiring the client to expose a persistent wallet address identifier. The `jwk` property can only be used for non-interactive grant requests (i.e.: incoming payments).
          *
          *     If sending a grant initiation request that requires RO interaction, the wallet address MUST serve necessary client display information.
          */
-        client: string;
+        client: string | ({
+            /**
+             * Format: uri
+             * @description Wallet address of the client instance that is making this request.
+             */
+            walletAddress?: string;
+            jwk?: components["schemas"]["json-web-key"];
+        } & (unknown | unknown));
         /**
          * continue
          * @description If the AS determines that the request can be continued with additional requests, it responds with the continue field.
@@ -291,6 +306,45 @@ export interface components {
                 code?: "invalid_rotation";
             };
         };
+        /**
+         * subject
+         * @description Information about the subject for which the client is requesting information.
+         */
+        subject: {
+            /** @description A list of subject identifiers. */
+            sub_ids: {
+                /** @description Specific identifier for the subject for which the client is requesting information. */
+                id: string;
+                /**
+                 * @description The format of subject identifier that the client can accept.
+                 * @enum {string}
+                 */
+                format: "uri";
+            }[];
+        };
+        /**
+         * Ed25519 Public Key
+         * @description A JWK representation of an Ed25519 Public Key
+         */
+        "json-web-key": {
+            kid: string;
+            /**
+             * @description The cryptographic algorithm family used with the key. The only allowed value is `EdDSA`.
+             * @enum {string}
+             */
+            alg: "EdDSA";
+            /** @enum {string} */
+            use?: "sig";
+            /** @enum {string} */
+            kty: "OKP";
+            /**
+             * @description The cryptographic curve used with the key. This parameter identifies the elliptic curve (for EC keys) or the Edwards curve (for OKP keys). The only allowed value is `Ed25519`.
+             * @enum {string}
+             */
+            crv: "Ed25519";
+            /** @description The base64 url-encoded public key. */
+            x: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -310,11 +364,19 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    client: components["schemas"]["client"];
+                    interact?: components["schemas"]["interact-request"];
                     access_token: {
                         access: components["schemas"]["access"];
                     };
+                    subject?: components["schemas"]["subject"];
+                } | {
                     client: components["schemas"]["client"];
-                    interact?: components["schemas"]["interact-request"];
+                    interact: components["schemas"]["interact-request"];
+                    access_token?: {
+                        access: components["schemas"]["access"];
+                    };
+                    subject: components["schemas"]["subject"];
                 };
             };
         };
@@ -390,6 +452,7 @@ export interface operations {
                 content: {
                     "application/json": {
                         access_token?: components["schemas"]["access_token"];
+                        subject?: components["schemas"]["subject"];
                         continue: components["schemas"]["continue"];
                     };
                 };

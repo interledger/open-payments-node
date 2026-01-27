@@ -178,6 +178,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/outgoing-payment-grant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get spent amounts for current outgoing payment grant
+         * @description Returns the spent amounts for the current outgoing payment grant corresponding to the presented GNAP access token, if any. If a grant was created with an interval (recurring), the amounts returned are for the current interval.
+         */
+        get: operations["get-outgoing-payment-grant"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -474,9 +494,9 @@ export interface components {
         /** @description URL of a wallet address hosted by a Rafiki instance. */
         "wallet-address": string;
         /** @description The signature generated based on the Signature-Input, using the signing algorithm specified in the "alg" field of the JWK. */
-        signature: components["parameters"]["optional-signature"];
+        signature: string;
         /** @description The Signature-Input field is a Dictionary structured field containing the metadata for one or more message signatures generated from components within the HTTP message.  Each member describes a single message signature.  The member's key is the label that uniquely identifies the message signature within the context of the HTTP message.  The member's value is the serialization of the covered components Inner List plus all signature metadata parameters identified by the label.  The following components MUST be included: - "@method" - "@target-uri" - "authorization".  When the message contains a request body, the covered components MUST also include the following: - "content-digest"  The keyid parameter of the signature MUST be set to the kid value of the JWK.      See [ietf-httpbis-message-signatures](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures#section-4.1) for more details. */
-        "signature-input": components["parameters"]["optional-signature-input"];
+        "signature-input": string;
         /** @description The signature generated based on the Signature-Input, using the signing algorithm specified in the "alg" field of the JWK. */
         "optional-signature": string;
         /** @description The Signature-Input field is a Dictionary structured field containing the metadata for one or more message signatures generated from components within the HTTP message.  Each member describes a single message signature.  The member's key is the label that uniquely identifies the message signature within the context of the HTTP message.  The member's value is the serialization of the covered components Inner List plus all signature metadata parameters identified by the label.  The following components MUST be included: - "@method" - "@target-uri" - "authorization".  When the message contains a request body, the covered components MUST also include the following: - "content-digest"  The keyid parameter of the signature MUST be set to the kid value of the JWK.      See [ietf-httpbis-message-signatures](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures#section-4.1) for more details. */
@@ -851,6 +871,36 @@ export interface operations {
             403: components["responses"]["403"];
             /** @description Quote Not Found */
             404: components["responses"]["404"];
+        };
+    };
+    "get-outgoing-payment-grant": {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The Signature-Input field is a Dictionary structured field containing the metadata for one or more message signatures generated from components within the HTTP message.  Each member describes a single message signature.  The member's key is the label that uniquely identifies the message signature within the context of the HTTP message.  The member's value is the serialization of the covered components Inner List plus all signature metadata parameters identified by the label.  The following components MUST be included: - "@method" - "@target-uri" - "authorization".  When the message contains a request body, the covered components MUST also include the following: - "content-digest"  The keyid parameter of the signature MUST be set to the kid value of the JWK.      See [ietf-httpbis-message-signatures](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures#section-4.1) for more details. */
+                "Signature-Input": components["parameters"]["signature-input"];
+                /** @description The signature generated based on the Signature-Input, using the signing algorithm specified in the "alg" field of the JWK. */
+                Signature: components["parameters"]["signature"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        spentReceiveAmount?: components["schemas"]["amount"];
+                        spentDebitAmount?: components["schemas"]["amount"];
+                    };
+                };
+            };
+            401: components["responses"]["401"];
+            403: components["responses"]["403"];
         };
     };
 }
