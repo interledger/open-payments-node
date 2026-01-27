@@ -2,6 +2,7 @@ import {
   createOutgoingPayment,
   createOutgoingPaymentRoutes,
   getOutgoingPayment,
+  getOutgoingPaymentGrantSpentAmounts,
   listOutgoingPayments,
   validateOutgoingPayment
 } from './outgoing-payment'
@@ -9,6 +10,7 @@ import { OpenAPI, HttpMethod } from '@interledger/openapi'
 import {
   mockOutgoingPayment,
   mockOutgoingPaymentWithSpentAmounts,
+  mockOutgoingPaymentGrantSpentAmounts,
   mockOpenApiResponseValidators,
   mockOutgoingPaymentPaginationResult,
   createTestDeps
@@ -631,6 +633,92 @@ describe('outgoing-payment', (): void => {
           )
         }
       )
+    })
+
+    describe('getGrantSpentAmounts', (): void => {
+      test.each`
+        validateResponses | description
+        ${true}           | ${'with response validation'}
+        ${false}          | ${'without response validation'}
+      `(
+        'calls get method $description',
+        async ({ validateResponses }): Promise<void> => {
+          const mockResponseValidator = ({ path, method }) =>
+            path === '/outgoing-payment-grant' && method === HttpMethod.GET
+
+          jest
+            .spyOn(openApi, 'createResponseValidator')
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .mockImplementation(mockResponseValidator as any)
+
+          const getSpy = jest
+            .spyOn(requestors, 'get')
+            .mockResolvedValueOnce(mockOutgoingPaymentGrantSpentAmounts())
+
+          await createOutgoingPaymentRoutes({
+            openApi: validateResponses ? openApi : undefined,
+            ...deps
+          }).getGrantSpentAmounts({
+            url: serverAddress,
+            accessToken: 'accessToken'
+          })
+
+          expect(getSpy).toHaveBeenCalledWith(
+            deps,
+            {
+              url: `${serverAddress}/outgoing-payment-grant`,
+              accessToken: 'accessToken'
+            },
+            validateResponses ? true : undefined
+          )
+        }
+      )
+    })
+  })
+
+  describe('getOutgoingPaymentGrantSpentAmounts', (): void => {
+    test('returns grant spent amounts', async (): Promise<void> => {
+      const grantSpentAmounts = mockOutgoingPaymentGrantSpentAmounts()
+
+      const scope = nock(serverAddress)
+        .get('/outgoing-payment-grant')
+        .reply(200, grantSpentAmounts)
+
+      const result = await getOutgoingPaymentGrantSpentAmounts(
+        deps,
+        {
+          url: serverAddress,
+          accessToken: 'accessToken'
+        },
+        openApiValidators.successfulValidator
+      )
+
+      expect(result).toEqual(grantSpentAmounts)
+      scope.done()
+    })
+
+    test('returns grant spent amounts with partial data', async (): Promise<void> => {
+      const grantSpentAmounts = mockOutgoingPaymentGrantSpentAmounts({
+        spentReceiveAmount: undefined
+      })
+
+      const scope = nock(serverAddress)
+        .get('/outgoing-payment-grant')
+        .reply(200, grantSpentAmounts)
+
+      const result = await getOutgoingPaymentGrantSpentAmounts(
+        deps,
+        {
+          url: serverAddress,
+          accessToken: 'accessToken'
+        },
+        openApiValidators.successfulValidator
+      )
+
+      expect(result).toEqual(grantSpentAmounts)
+      expect(result.spentDebitAmount).toBeDefined()
+      expect(result.spentReceiveAmount).toBeUndefined()
+      scope.done()
     })
   })
 })

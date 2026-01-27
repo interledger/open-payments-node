@@ -40,6 +40,8 @@ export type IncomingPaymentPaginationResult = PaginationResult<IncomingPayment>
 export type OutgoingPayment = RSComponents['schemas']['outgoing-payment']
 export type OutgoingPaymentWithSpentAmounts =
   RSComponents['schemas']['outgoing-payment-with-spent-amounts']
+export type OutgoingPaymentGrantSpentAmounts =
+  RSOperations['get-outgoing-payment-grant']['responses']['200']['content']['application/json']
 export type CreateOutgoingPaymentArgs =
   RSOperations['create-outgoing-payment']['requestBody']['content']['application/json']
 type PaginationResult<T> = {
@@ -81,21 +83,38 @@ export type CreateQuoteArgs =
 
 export const getASPath = <P extends keyof ASPaths>(path: P): string =>
   path as string
+
+export type Subject = ASComponents['schemas']['subject']
+
 export type NonInteractiveGrantRequest = {
   access_token: ASOperations['post-request']['requestBody']['content']['application/json']['access_token']
   client: ASOperations['post-request']['requestBody']['content']['application/json']['client']
 }
+
+type BaseGrantRequest = {
+  client: ASOperations['post-request']['requestBody']['content']['application/json']['client']
+  interact?: ASOperations['post-request']['requestBody']['content']['application/json']['interact']
+}
+
+type GrantRequestWithAccessToken = BaseGrantRequest & {
+  access_token: { access: GrantRequestAccessItem[] }
+  subject?: Subject
+}
+
+type GrantRequestWithSubject = BaseGrantRequest & {
+  access_token?: { access: GrantRequestAccessItem[] }
+  subject: Subject
+}
+
+export type GrantRequest = GrantRequestWithAccessToken | GrantRequestWithSubject
+
 export type Grant = {
-  access_token: ASComponents['schemas']['access_token']
+  access_token?: ASComponents['schemas']['access_token']
   continue: ASComponents['schemas']['continue']
+  subject?: Subject
 }
 export type GrantContinuation = {
   continue: ASComponents['schemas']['continue']
-}
-export type GrantRequest = {
-  access_token: { access: GrantRequestAccessItem[] }
-  client: ASOperations['post-request']['requestBody']['content']['application/json']['client']
-  interact?: ASOperations['post-request']['requestBody']['content']['application/json']['interact']
 }
 
 export type GrantContinuationRequest =
@@ -117,9 +136,21 @@ export const isPendingGrant = (
   grant: PendingGrant | Grant
 ): grant is PendingGrant => !!(grant as PendingGrant).interact
 
+/**
+ * @deprecated Use isFinalizedGrantWithAccessToken or isFinalizedGrantWithSubject instead.
+ */
 export const isFinalizedGrant = (
   grant: GrantContinuation | Grant
 ): grant is Grant => !!(grant as Grant).access_token
+
+export const isFinalizedGrantWithAccessToken = (
+  grant: GrantContinuation | Grant
+): grant is Grant & { access_token: ASComponents['schemas']['access_token'] } =>
+  !!(grant as Grant).access_token
+
+export const isFinalizedGrantWithSubject = (
+  grant: GrantContinuation | Grant
+): grant is Grant & { subject: Subject } => !!(grant as Grant).subject
 
 export type AccessIncomingActions =
   ASComponents['schemas']['access-incoming']['actions']

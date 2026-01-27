@@ -9,6 +9,7 @@ import {
   CreateOutgoingPaymentArgs,
   getRSPath,
   OutgoingPayment,
+  OutgoingPaymentGrantSpentAmounts,
   OutgoingPaymentPaginationResult,
   OutgoingPaymentWithSpentAmounts,
   PaginationArgs
@@ -26,6 +27,9 @@ export interface OutgoingPaymentRoutes {
     requestArgs: ResourceRequestArgs,
     createArgs: CreateOutgoingPaymentArgs
   ): Promise<OutgoingPaymentWithSpentAmounts>
+  getGrantSpentAmounts(
+    args: ResourceRequestArgs
+  ): Promise<OutgoingPaymentGrantSpentAmounts>
 }
 
 export const createOutgoingPaymentRoutes = (
@@ -36,6 +40,7 @@ export const createOutgoingPaymentRoutes = (
   let getOutgoingPaymentOpenApiValidator: ResponseValidator<OutgoingPayment>
   let listOutgoingPaymentOpenApiValidator: ResponseValidator<OutgoingPaymentPaginationResult>
   let createOutgoingPaymentOpenApiValidator: ResponseValidator<OutgoingPayment>
+  let getGrantSpentAmountsOpenApiValidator: ResponseValidator<OutgoingPaymentGrantSpentAmounts>
 
   if (openApi) {
     getOutgoingPaymentOpenApiValidator = openApi.createResponseValidator({
@@ -51,6 +56,11 @@ export const createOutgoingPaymentRoutes = (
     createOutgoingPaymentOpenApiValidator = openApi.createResponseValidator({
       path: getRSPath('/outgoing-payments'),
       method: HttpMethod.POST
+    })
+
+    getGrantSpentAmountsOpenApiValidator = openApi.createResponseValidator({
+      path: getRSPath('/outgoing-payment-grant'),
+      method: HttpMethod.GET
     })
   }
 
@@ -77,6 +87,12 @@ export const createOutgoingPaymentRoutes = (
         requestArgs,
         createOutgoingPaymentOpenApiValidator,
         createArgs
+      ),
+    getGrantSpentAmounts: (requestArgs: ResourceRequestArgs) =>
+      getOutgoingPaymentGrantSpentAmounts(
+        baseDeps,
+        requestArgs,
+        getGrantSpentAmountsOpenApiValidator
       )
   }
 }
@@ -193,4 +209,22 @@ export const validateOutgoingPayment = (
   }
 
   return payment
+}
+
+export const getOutgoingPaymentGrantSpentAmounts = async (
+  deps: BaseDeps,
+  requestArgs: ResourceRequestArgs,
+  validateOpenApiResponse: ResponseValidator<OutgoingPaymentGrantSpentAmounts>
+): Promise<OutgoingPaymentGrantSpentAmounts> => {
+  const { url: baseUrl, accessToken } = requestArgs
+  const url = `${baseUrl}${getRSPath('/outgoing-payment-grant')}`
+
+  return await get(
+    deps,
+    {
+      url,
+      accessToken
+    },
+    validateOpenApiResponse
+  )
 }

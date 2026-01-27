@@ -6,6 +6,7 @@ import {
   GrantRequest,
   GrantContinuationRequest,
   OutgoingPayment,
+  OutgoingPaymentGrantSpentAmounts,
   OutgoingPaymentPaginationResult,
   WalletAddress,
   JWK,
@@ -18,7 +19,8 @@ import {
   IlpPaymentMethod,
   PublicIncomingPayment,
   DIDDocument,
-  OutgoingPaymentWithSpentAmounts
+  OutgoingPaymentWithSpentAmounts,
+  Subject
 } from '../types'
 import { v4 as uuid } from 'uuid'
 import { ResponseValidator, ValidationError } from '@interledger/openapi'
@@ -211,6 +213,22 @@ export const mockOutgoingPaymentWithSpentAmounts = (
   ...overrides
 })
 
+export const mockOutgoingPaymentGrantSpentAmounts = (
+  overrides?: Partial<OutgoingPaymentGrantSpentAmounts>
+): OutgoingPaymentGrantSpentAmounts => ({
+  spentDebitAmount: {
+    assetCode: 'USD',
+    assetScale: 2,
+    value: '10'
+  },
+  spentReceiveAmount: {
+    assetCode: 'USD',
+    assetScale: 2,
+    value: '10'
+  },
+  ...overrides
+})
+
 export const mockOutgoingPaymentPaginationResult = (
   overrides?: Partial<OutgoingPaymentPaginationResult>
 ): OutgoingPaymentPaginationResult => {
@@ -230,6 +248,16 @@ export const mockOutgoingPaymentPaginationResult = (
     }
   }
 }
+
+export const mockSubject = (overrides?: Partial<Subject>): Subject => ({
+  sub_ids: [
+    {
+      id: 'https://example.com/.well-known/pay',
+      format: 'uri'
+    }
+  ],
+  ...overrides
+})
 
 export const mockPendingGrant = (
   overrides?: Partial<PendingGrant>

@@ -9,6 +9,7 @@ export {
   Quote,
   OutgoingPayment,
   OutgoingPaymentWithSpentAmounts,
+  OutgoingPaymentGrantSpentAmounts,
   PendingGrant,
   Grant,
   isPendingGrant,
@@ -20,7 +21,8 @@ export {
   AccessType,
   AccessAction,
   AccessToken,
-  AccessItem
+  AccessItem,
+  Subject
 } from './types'
 
 export {
@@ -44,6 +46,7 @@ export {
   mockIncomingPaymentWithPaymentMethods,
   mockIlpPaymentMethod,
   mockOutgoingPayment,
+  mockOutgoingPaymentGrantSpentAmounts,
   mockIncomingPaymentPaginationResult,
   mockOutgoingPaymentPaginationResult,
   mockQuote,
@@ -52,5 +55,6 @@ export {
   mockContinuationRequest,
   mockGrantRequest,
   mockGrant,
-  mockPendingGrant
+  mockPendingGrant,
+  mockSubject
 } from './test/helpers'
