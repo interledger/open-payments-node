@@ -1,5 +1,13 @@
 # @interledger/open-payments
 
+## 7.2.0
+
+### Minor Changes
+
+- 5a5c789: - Adds support for new subject field on grants
+  - Adds support for new outgoing payment grant spent amounts (`client.outgoingPayment.getGrantSpentAmounts`)
+  - Deprecated `isFinalizedGrant` in favor of `isFinalizedGrantWithAccessToken` and `isFinalizedGrantWithSubject`, since grants finalized via `subject` may not include an `access_token`
+
 ## 7.1.3
 
 ### Patch Changes
