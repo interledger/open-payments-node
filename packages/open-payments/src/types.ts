@@ -85,14 +85,18 @@ export const getASPath = <P extends keyof ASPaths>(path: P): string =>
   path as string
 
 export type Subject = ASComponents['schemas']['subject']
+export type Client =
+  | string
+  | { walletAddress: string; jwk?: never }
+  | { jwk: JWK; walletAddress?: never }
 
 export type NonInteractiveGrantRequest = {
   access_token: ASOperations['post-request']['requestBody']['content']['application/json']['access_token']
-  client: ASOperations['post-request']['requestBody']['content']['application/json']['client']
+  client: Client
 }
 
 type BaseGrantRequest = {
-  client: ASOperations['post-request']['requestBody']['content']['application/json']['client']
+  client: Client
   interact?: ASOperations['post-request']['requestBody']['content']['application/json']['interact']
 }
 
@@ -112,6 +116,12 @@ export type Grant = {
   access_token?: ASComponents['schemas']['access_token']
   continue: ASComponents['schemas']['continue']
   subject?: Subject
+}
+export type GrantWithAccessToken = Grant & {
+  access_token: NonNullable<Grant['access_token']>
+}
+export type GrantWithSubject = Grant & {
+  subject: NonNullable<Grant['subject']>
 }
 export type GrantContinuation = {
   continue: ASComponents['schemas']['continue']
@@ -145,12 +155,11 @@ export const isFinalizedGrant = (
 
 export const isFinalizedGrantWithAccessToken = (
   grant: GrantContinuation | Grant
-): grant is Grant & { access_token: ASComponents['schemas']['access_token'] } =>
-  !!(grant as Grant).access_token
+): grant is GrantWithAccessToken => !!(grant as Grant).access_token
 
 export const isFinalizedGrantWithSubject = (
   grant: GrantContinuation | Grant
-): grant is Grant & { subject: Subject } => !!(grant as Grant).subject
+): grant is GrantWithSubject => !!(grant as Grant).subject
 
 export type AccessIncomingActions =
   ASComponents['schemas']['access-incoming']['actions']

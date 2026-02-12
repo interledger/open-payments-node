@@ -12,8 +12,12 @@ export {
   OutgoingPaymentGrantSpentAmounts,
   PendingGrant,
   Grant,
+  GrantWithAccessToken,
+  GrantWithSubject,
   isPendingGrant,
   isFinalizedGrant,
+  isFinalizedGrantWithAccessToken,
+  isFinalizedGrantWithSubject,
   JWK,
   JWKS,
   PaginationArgs,
@@ -22,7 +26,8 @@ export {
   AccessAction,
   AccessToken,
   AccessItem,
-  Subject
+  Subject,
+  Client
 } from './types'
 
 export {

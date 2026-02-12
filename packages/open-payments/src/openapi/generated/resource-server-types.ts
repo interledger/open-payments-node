@@ -894,8 +894,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        spentReceiveAmount?: components["schemas"]["amount"];
-                        spentDebitAmount?: components["schemas"]["amount"];
+                        spentReceiveAmount: components["schemas"]["amount"] | null;
+                        spentDebitAmount: components["schemas"]["amount"] | null;
                     };
                 };
             };
