@@ -1,5 +1,11 @@
 # @interledger/open-payments
 
+## 7.3.0
+
+### Minor Changes
+
+- 2d78b59: New union client type to support directed identity. Exported grant type guards and added new, more explicit grant types.
+
 ## 7.2.0
 
 ### Minor Changes
