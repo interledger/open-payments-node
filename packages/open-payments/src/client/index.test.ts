@@ -109,7 +109,6 @@ describe('Client', (): void => {
         await createAuthenticatedClient({
           logger: silentLogger,
           keyId: 'keyid-1',
-          // @ts-expect-error Testing runtime validation
           walletAddressUrl: 'http://localhost:1000/.well-known/pay',
           client: { jwk: mockJwk() },
           privateKey: keypair.privateKey
@@ -132,7 +131,6 @@ describe('Client', (): void => {
         await createAuthenticatedClient({
           logger: silentLogger,
           keyId: 'keyid-1',
-          // @ts-expect-error Testing runtime validation
           privateKey: keypair.privateKey
         })
       } catch (error) {
