@@ -367,17 +367,18 @@ export async function createAuthenticatedClient(
     )
   }
 
-  if (!args.client && !args.walletAddressUrl) {
+  let clientIdentifier: ClientIdentifier
+  if (args.client) {
+    clientIdentifier = args.client
+  } else if (args.walletAddressUrl) {
+    clientIdentifier = { walletAddressUrl: args.walletAddressUrl }
+  } else {
     throw new OpenPaymentsClientError(
       'Invalid arguments when creating authenticated client.',
       {
         description: 'Either `client` or `walletAddressUrl` must be provided.'
       }
     )
-  }
-
-  const clientIdentifier: ClientIdentifier = args.client ?? {
-    walletAddressUrl: args.walletAddressUrl!
   }
 
   const {
