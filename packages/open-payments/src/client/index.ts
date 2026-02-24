@@ -17,7 +17,7 @@ import {
 import { createHttpClient, HttpClient, InterceptorFn } from './requests'
 
 import { createGrantRoutes, GrantRoutes } from './grant'
-import { Client, JWK } from '../types'
+import { JWK } from '../types'
 import {
   createOutgoingPaymentRoutes,
   OutgoingPaymentRoutes
@@ -376,14 +376,8 @@ export async function createAuthenticatedClient(
     )
   }
 
-  let client: Client
-  if (args.client) {
-    client =
-      'jwk' in args.client && args.client.jwk
-        ? { jwk: args.client.jwk }
-        : args.client.walletAddressUrl
-  } else {
-    client = args.walletAddressUrl!
+  const clientIdentifier: ClientIdentifier = args.client ?? {
+    walletAddressUrl: args.walletAddressUrl!
   }
 
   const {
@@ -395,7 +389,7 @@ export async function createAuthenticatedClient(
 
   baseDeps.logger.debug(
     {
-      client,
+      client: clientIdentifier,
       ...('keyId' in args ? { keyId: args.keyId } : {}),
       validateResponses: !!args.validateResponses,
       useHttp: baseDeps.useHttp,
@@ -421,7 +415,7 @@ export async function createAuthenticatedClient(
     grant: createGrantRoutes({
       ...baseDeps,
       openApi: authServerOpenApi,
-      client
+      client: clientIdentifier
     }),
     token: createTokenRoutes({
       ...baseDeps,

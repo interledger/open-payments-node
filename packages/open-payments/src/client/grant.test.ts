@@ -10,7 +10,7 @@ import {
 import * as requestors from './requests'
 import { v4 as uuid } from 'uuid'
 import { getAuthServerOpenAPI } from '../openapi'
-import { BaseDeps } from '.'
+import { BaseDeps, ClientIdentifier } from '.'
 import { GrantRequest } from '../types'
 
 jest.mock('./requests', () => ({
@@ -29,7 +29,8 @@ describe('grant', (): void => {
     deps = await createTestDeps()
   })
 
-  const client = 'https://example.com/.well-known/pay'
+  const walletAddressUrl = 'https://example.com/.well-known/pay'
+  const client: ClientIdentifier = { walletAddressUrl }
 
   describe('routes', () => {
     const url = 'http://localhost:1000'
@@ -65,7 +66,7 @@ describe('grant', (): void => {
               url,
               body: {
                 ...grantRequest,
-                client
+                client: walletAddressUrl
               }
             },
             validateResponses ? true : undefined
@@ -125,7 +126,7 @@ describe('grant', (): void => {
                 url,
                 body: {
                   ...testGrantRequest,
-                  client
+                  client: walletAddressUrl
                 }
               },
               true
@@ -168,7 +169,7 @@ describe('grant', (): void => {
             url,
             body: {
               ...subjectOnlyRequest,
-              client
+              client: walletAddressUrl
             }
           },
           true
@@ -209,7 +210,7 @@ describe('grant', (): void => {
             url,
             body: {
               ...combinedRequest,
-              client
+              client: walletAddressUrl
             }
           },
           true
@@ -261,16 +262,16 @@ describe('grant', (): void => {
         )
       })
 
-      test('POST grant request with walletAddress object client', async (): Promise<void> => {
+      test('POST grant request with walletAddressUrl client', async (): Promise<void> => {
         const postSpy = jest.spyOn(requestors, 'post')
         const grantRequest = mockGrantRequest()
-        const walletAddressClient = {
-          walletAddress: 'https://example.com/.well-known/pay'
+        const walletAddressUrlClient: ClientIdentifier = {
+          walletAddressUrl: 'https://example.com/.well-known/pay'
         }
 
         await createGrantRoutes({
           openApi,
-          client: walletAddressClient,
+          client: walletAddressUrlClient,
           ...deps
         }).request({ url }, grantRequest)
 
@@ -280,7 +281,7 @@ describe('grant', (): void => {
             url,
             body: {
               ...grantRequest,
-              client: walletAddressClient
+              client: walletAddressUrlClient.walletAddressUrl
             }
           },
           true
