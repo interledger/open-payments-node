@@ -13,12 +13,13 @@ import {
   GrantRequest,
   GrantContinuationRequest,
   AccessOutgoingWithDebitAmount,
-  AccessOutgoingWithReceiveAmount
+  AccessOutgoingWithReceiveAmount,
+  Client
 } from '../types'
 import { post, deleteRequest } from './requests'
 
 export interface GrantRouteDeps extends RouteDeps {
-  client: string
+  client: Client
 }
 
 export interface GrantRoutes {

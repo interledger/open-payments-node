@@ -2,7 +2,7 @@ import { createAuthenticatedClient, OpenPaymentsClientError } from '.'
 import fs from 'fs'
 import assert from 'assert'
 import { generateKeyPairSync } from 'crypto'
-import { silentLogger } from '../test/helpers'
+import { mockJwk, silentLogger } from '../test/helpers'
 
 describe('Client', (): void => {
   const TMP_DIR = './tmp'
@@ -72,6 +72,78 @@ describe('Client', (): void => {
           authenticatedRequestInterceptor: (config) => config
         })
       ).resolves.toBeDefined()
+    })
+
+    test('properly creates the client with client JWK', async (): Promise<void> => {
+      const keypair = generateKeyPairSync('ed25519')
+
+      const client = await createAuthenticatedClient({
+        logger: silentLogger,
+        keyId: 'keyid-1',
+        client: { jwk: mockJwk() },
+        privateKey: keypair.privateKey
+      })
+
+      expect(client).toBeDefined()
+      expect(client.grant).toBeDefined()
+    })
+
+    test('properly creates the client with client walletAddressUrl', async (): Promise<void> => {
+      const keypair = generateKeyPairSync('ed25519')
+
+      const client = await createAuthenticatedClient({
+        logger: silentLogger,
+        keyId: 'keyid-1',
+        client: { walletAddressUrl: 'http://localhost:1000/.well-known/pay' },
+        privateKey: keypair.privateKey
+      })
+
+      expect(client).toBeDefined()
+      expect(client.grant).toBeDefined()
+    })
+
+    test('throws error if both client and walletAddressUrl are provided', async (): Promise<void> => {
+      expect.assertions(2)
+      const keypair = generateKeyPairSync('ed25519')
+      try {
+        await createAuthenticatedClient({
+          logger: silentLogger,
+          keyId: 'keyid-1',
+          // @ts-expect-error Testing runtime validation
+          walletAddressUrl: 'http://localhost:1000/.well-known/pay',
+          client: { jwk: mockJwk() },
+          privateKey: keypair.privateKey
+        })
+      } catch (error) {
+        assert.ok(error instanceof OpenPaymentsClientError)
+        expect(error.message).toBe(
+          'Invalid arguments when creating authenticated client.'
+        )
+        expect(error.description).toBe(
+          'Both `client` and `walletAddressUrl` were provided. Please use `client` only.'
+        )
+      }
+    })
+
+    test('throws error if neither client nor walletAddressUrl are provided', async (): Promise<void> => {
+      expect.assertions(2)
+      const keypair = generateKeyPairSync('ed25519')
+      try {
+        await createAuthenticatedClient({
+          logger: silentLogger,
+          keyId: 'keyid-1',
+          // @ts-expect-error Testing runtime validation
+          privateKey: keypair.privateKey
+        })
+      } catch (error) {
+        assert.ok(error instanceof OpenPaymentsClientError)
+        expect(error.message).toBe(
+          'Invalid arguments when creating authenticated client.'
+        )
+        expect(error.description).toBe(
+          'Either `client` or `walletAddressUrl` must be provided.'
+        )
+      }
     })
 
     test('throws error if could not load private key as Buffer', async (): Promise<void> => {

@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createGrantRoutes } from './grant'
 import { OpenAPI, HttpMethod } from '@interledger/openapi'
-import { createTestDeps, mockGrantRequest, mockSubject } from '../test/helpers'
+import {
+  createTestDeps,
+  mockGrantRequest,
+  mockJwk,
+  mockSubject
+} from '../test/helpers'
 import * as requestors from './requests'
 import { v4 as uuid } from 'uuid'
 import { getAuthServerOpenAPI } from '../openapi'
@@ -230,6 +235,56 @@ describe('grant', (): void => {
             ...deps
           }).request({ url }, emptyRequest)
         ).rejects.toThrow('Invalid Grant Request')
+      })
+
+      test('POST grant request with JWK client', async (): Promise<void> => {
+        const postSpy = jest.spyOn(requestors, 'post')
+        const grantRequest = mockGrantRequest()
+        const jwkClient = { jwk: mockJwk() }
+
+        await createGrantRoutes({
+          openApi,
+          client: jwkClient,
+          ...deps
+        }).request({ url }, grantRequest)
+
+        expect(postSpy).toHaveBeenCalledWith(
+          deps,
+          {
+            url,
+            body: {
+              ...grantRequest,
+              client: jwkClient
+            }
+          },
+          true
+        )
+      })
+
+      test('POST grant request with walletAddress object client', async (): Promise<void> => {
+        const postSpy = jest.spyOn(requestors, 'post')
+        const grantRequest = mockGrantRequest()
+        const walletAddressClient = {
+          walletAddress: 'https://example.com/.well-known/pay'
+        }
+
+        await createGrantRoutes({
+          openApi,
+          client: walletAddressClient,
+          ...deps
+        }).request({ url }, grantRequest)
+
+        expect(postSpy).toHaveBeenCalledWith(
+          deps,
+          {
+            url,
+            body: {
+              ...grantRequest,
+              client: walletAddressClient
+            }
+          },
+          true
+        )
       })
     })
 
