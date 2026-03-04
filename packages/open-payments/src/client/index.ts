@@ -17,7 +17,6 @@ import {
 import { createHttpClient, HttpClient, InterceptorFn } from './requests'
 
 import { createGrantRoutes, GrantRoutes } from './grant'
-import { JWK } from '../types'
 import {
   createOutgoingPaymentRoutes,
   OutgoingPaymentRoutes
@@ -284,15 +283,9 @@ export const createUnauthenticatedClient = async (
   }
 }
 
-export type ClientIdentifier =
-  | { jwk: JWK; walletAddressUrl?: never }
-  | { walletAddressUrl: string; jwk?: never }
-
 interface BaseAuthenticatedClientArgs extends CreateUnauthenticatedClientArgs {
-  /** @deprecated Use `client` instead. */
-  walletAddressUrl?: string
-  /** The client identifier for grant requests. Provide either a JWK or a wallet address URL. */
-  client?: ClientIdentifier
+  /** The wallet address which the client will identify itself by */
+  walletAddressUrl: string
 }
 
 interface PrivateKeyConfig {
@@ -356,31 +349,6 @@ export async function createAuthenticatedClient(
       }
     )
   }
-
-  if (args.client && args.walletAddressUrl) {
-    throw new OpenPaymentsClientError(
-      'Invalid arguments when creating authenticated client.',
-      {
-        description:
-          'Both `client` and `walletAddressUrl` were provided. Please use `client` only.'
-      }
-    )
-  }
-
-  let clientIdentifier: ClientIdentifier
-  if (args.client) {
-    clientIdentifier = args.client
-  } else if (args.walletAddressUrl) {
-    clientIdentifier = { walletAddressUrl: args.walletAddressUrl }
-  } else {
-    throw new OpenPaymentsClientError(
-      'Invalid arguments when creating authenticated client.',
-      {
-        description: 'Either `client` or `walletAddressUrl` must be provided.'
-      }
-    )
-  }
-
   const {
     resourceServerOpenApi,
     authServerOpenApi,
@@ -390,7 +358,7 @@ export async function createAuthenticatedClient(
 
   baseDeps.logger.debug(
     {
-      client: clientIdentifier,
+      walletAddressUrl: args.walletAddressUrl,
       ...('keyId' in args ? { keyId: args.keyId } : {}),
       validateResponses: !!args.validateResponses,
       useHttp: baseDeps.useHttp,
@@ -416,7 +384,7 @@ export async function createAuthenticatedClient(
     grant: createGrantRoutes({
       ...baseDeps,
       openApi: authServerOpenApi,
-      client: clientIdentifier
+      client: args.walletAddressUrl
     }),
     token: createTokenRoutes({
       ...baseDeps,

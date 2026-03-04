@@ -1,6 +1,5 @@
 import { HttpMethod, ResponseValidator } from '@interledger/openapi'
 import {
-  ClientIdentifier,
   GrantOrTokenRequestArgs,
   OpenPaymentsClientError,
   RouteDeps,
@@ -19,7 +18,7 @@ import {
 import { post, deleteRequest } from './requests'
 
 export interface GrantRouteDeps extends RouteDeps {
-  client: ClientIdentifier
+  client: string
 }
 
 export interface GrantRoutes {
@@ -91,10 +90,7 @@ export const createGrantRoutes = (deps: GrantRouteDeps): GrantRoutes => {
           url,
           body: {
             ...args,
-            client:
-              'jwk' in client && client.jwk
-                ? { jwk: client.jwk }
-                : client.walletAddressUrl
+            client
           }
         },
         requestGrantValidator
