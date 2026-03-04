@@ -219,6 +219,7 @@ describe('grant', (): void => {
       test('POST grant request with clientOverride uses override instead of default', async (): Promise<void> => {
         const postSpy = jest.spyOn(requestors, 'post')
         const grantRequest = mockGrantRequest()
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { client: _client, ...grantRequestWithoutClient } = grantRequest
         const jwk = mockJwk()
 
