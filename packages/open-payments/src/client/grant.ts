@@ -13,7 +13,8 @@ import {
   GrantRequest,
   GrantContinuationRequest,
   AccessOutgoingWithDebitAmount,
-  AccessOutgoingWithReceiveAmount
+  AccessOutgoingWithReceiveAmount,
+  Client
 } from '../types'
 import { post, deleteRequest } from './requests'
 
@@ -24,7 +25,8 @@ export interface GrantRouteDeps extends RouteDeps {
 export interface GrantRoutes {
   request(
     postArgs: UnauthenticatedResourceRequestArgs,
-    args: Omit<GrantRequest, 'client'>
+    args: Omit<GrantRequest, 'client'>,
+    clientOverride?: Client
   ): Promise<PendingGrant | Grant>
   continue(
     postArgs: GrantOrTokenRequestArgs,
@@ -58,7 +60,8 @@ export const createGrantRoutes = (deps: GrantRouteDeps): GrantRoutes => {
   return {
     request: async (
       { url }: UnauthenticatedResourceRequestArgs,
-      args: Omit<GrantRequest, 'client'>
+      args: Omit<GrantRequest, 'client'>,
+      clientOverride?: Client
     ) => {
       if (!args.access_token && !args.subject) {
         throw new OpenPaymentsClientError('Invalid Grant Request', {
@@ -90,7 +93,7 @@ export const createGrantRoutes = (deps: GrantRouteDeps): GrantRoutes => {
           url,
           body: {
             ...args,
-            client
+            client: clientOverride ?? client
           }
         },
         requestGrantValidator
