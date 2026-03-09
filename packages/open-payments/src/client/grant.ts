@@ -26,6 +26,9 @@ export interface GrantRoutes {
   request(
     postArgs: UnauthenticatedResourceRequestArgs,
     args: Omit<GrantRequest, 'client'>,
+    /**
+     * Optionally override the default client configuration for this specific grant request.
+     */
     clientOverride?: Client
   ): Promise<PendingGrant | Grant>
   continue(
