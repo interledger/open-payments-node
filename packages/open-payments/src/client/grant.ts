@@ -14,7 +14,7 @@ import {
   GrantContinuationRequest,
   AccessOutgoingWithDebitAmount,
   AccessOutgoingWithReceiveAmount,
-  Client
+  JWK
 } from '../types'
 import { post, deleteRequest } from './requests'
 
@@ -27,9 +27,9 @@ export interface GrantRoutes {
     postArgs: UnauthenticatedResourceRequestArgs,
     args: Omit<GrantRequest, 'client'>,
     /**
-     * Optionally override the default client configuration for this specific grant request.
+     * Optionally override the default client configuration with a JWK for this specific grant request.
      */
-    clientOverride?: Client
+    clientOverride?: { jwk: JWK }
   ): Promise<PendingGrant | Grant>
   continue(
     postArgs: GrantOrTokenRequestArgs,
@@ -64,7 +64,7 @@ export const createGrantRoutes = (deps: GrantRouteDeps): GrantRoutes => {
     request: async (
       { url }: UnauthenticatedResourceRequestArgs,
       args: Omit<GrantRequest, 'client'>,
-      clientOverride?: Client
+      clientOverride?: { jwk: JWK }
     ) => {
       if (!args.access_token && !args.subject) {
         throw new OpenPaymentsClientError('Invalid Grant Request', {
