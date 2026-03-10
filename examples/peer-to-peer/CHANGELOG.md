@@ -1,5 +1,12 @@
 # example-peer-to-peer
 
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [646f388]
+  - @interledger/open-payments@7.4.0
+
 ## 1.0.2
 
 ### Patch Changes
