@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createGrantRoutes } from './grant'
 import { OpenAPI, HttpMethod } from '@interledger/openapi'
-import { createTestDeps, mockGrantRequest, mockSubject } from '../test/helpers'
+import {
+  createTestDeps,
+  mockGrantRequest,
+  mockJwk,
+  mockSubject
+} from '../test/helpers'
 import * as requestors from './requests'
 import { v4 as uuid } from 'uuid'
 import { getAuthServerOpenAPI } from '../openapi'
@@ -205,6 +210,32 @@ describe('grant', (): void => {
             body: {
               ...combinedRequest,
               client
+            }
+          },
+          true
+        )
+      })
+
+      test('POST grant request with clientOverride uses override instead of default', async (): Promise<void> => {
+        const postSpy = jest.spyOn(requestors, 'post')
+        const grantRequest = mockGrantRequest()
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { client: _client, ...grantRequestWithoutClient } = grantRequest
+        const jwk = mockJwk()
+
+        await createGrantRoutes({
+          openApi,
+          client,
+          ...deps
+        }).request({ url }, grantRequestWithoutClient, { jwk })
+
+        expect(postSpy).toHaveBeenCalledWith(
+          deps,
+          {
+            url,
+            body: {
+              ...grantRequestWithoutClient,
+              client: { jwk }
             }
           },
           true
