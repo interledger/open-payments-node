@@ -1,5 +1,11 @@
 # @interledger/open-payments
 
+## 7.4.0
+
+### Minor Changes
+
+- 646f388: Added optional client override (JWK) to grant request.
+
 ## 7.3.0
 
 ### Minor Changes
