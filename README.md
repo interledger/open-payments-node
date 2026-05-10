@@ -42,17 +42,13 @@ Never heard of Interledger before? Or would you like to learn more? Here are som
 
 Please read the [contribution guidelines](.github/contributing.md) before submitting contributions. All contributions must adhere to our [code of conduct](.github/code_of_conduct.md).
 
-## Open Payments Catchup Call
+## Open Payments Community Call
 
-Our catchup calls are open to our community. We have them every other Wednesday at 13:00 GMT, via Google Meet.
+Our Community Calls are open to everyone in our community. We have them every other Thursday at 13:00 GMT, via Google Meet.
 
-Video call link: https://meet.google.com/htd-eefo-ovn
+Video call link: https://meet.google.com/fcb-xamx-csr
 
-Or dial: (DE) +49 30 300195061 and enter this PIN: 105 520 503#
-
-More phone numbers: https://tel.meet/htd-eefo-ovn?hs=5
-
-[Add to Google Calendar](https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=MDNjYTdhYmE5MTgwNGJhMmIxYmU0YWFkMzI2NTFmMjVfMjAyNDA1MDhUMTIwMDAwWiBjX2NqMDI3Z21oc3VqazkxZXZpMjRkOXB2bXQ0QGc&tmsrc=c_cj027gmhsujk91evi24d9pvmt4%40group.calendar.google.com&scp=ALL)
+[Add to Google Calendar](https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=MG1tYzlwOHVtMmg5dnQxOXNodWc4czdxdG5fMjAyNjA1MDdUMTIwMDAwWiBiaWJpYW5hQGludGVybGVkZ2VyLm9yZw&tmsrc=bibiana%40interledger.org&scp=ALL)
 
 ## Local Development Environment
 
