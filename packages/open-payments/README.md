@@ -61,7 +61,7 @@ const incomingPayment = await client.walletAddress.get({
 
 ### `AuthenticatedClient`
 
-An `AuthenticatedClient` provides all of the methods that `UnauthenticatedClient` does, as well as the rest of the Open Payment APIs (both the authorizaton and resource specs). Each request requiring authentication will be signed (using [HTTP Message Signatures](https://github.com/interledger/open-payments/tree/main/packages/http-signature-utils)) with the given private key.
+An `AuthenticatedClient` provides all of the methods that `UnauthenticatedClient` does, as well as the rest of the Open Payment APIs (both the authorizaton and resource specs). Each request requiring authentication will be signed (using [HTTP Message Signatures](https://github.com/interledger/open-payments/tree/main/packages/http-signature-utils)) with the given private key or signer.
 
 ```ts
 import { createAuthenticatedClient } from '@interledger/open-payments'
@@ -80,6 +80,22 @@ In order to create the client, three properties need to be provided: `keyId`, th
 | `walletAddressUrl` | The valid wallet address with which the client making requests will identify itself. A JSON Web Key Set document that includes the public key that the client instance will use to protect requests MUST be available at the `{walletAddressUrl}/jwks.json` url. This will be used as the `client` field during [Grant Creation](https://openpayments.dev/apis/auth-server/operations/post-request/). |
 | `privateKey`       | The private EdDSA-Ed25519 key (or the relative or absolute path to the key) bound to the wallet address, and used to sign the authenticated requests with. As mentioned above, a public JWK document signed with this key MUST be available at the `{walletAddressUrl}/jwks.json` url.                                                                                                                |
 | `keyId`            | The key identifier of the given private key and the corresponding public JWK document.                                                                                                                                                                                                                                                                                                                |
+
+For deployments where the private key is managed by a KMS, HSM, Secure Enclave, or another non-extractable key store, provide a signer instead of `privateKey`:
+
+```ts
+import { createAuthenticatedClient } from '@interledger/open-payments'
+
+const client = await createAuthenticatedClient({
+  keyId: KEY_ID,
+  signer: {
+    async sign(data: Uint8Array): Promise<Uint8Array> {
+      return kms.sign(data)
+    }
+  },
+  walletAddressUrl: WALLET_ADDRESS_URL
+})
+```
 
 > **Note**
 >
