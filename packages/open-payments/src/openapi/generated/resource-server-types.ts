@@ -230,11 +230,51 @@ export interface components {
          * Receiver
          * Format: uri
          * @description The URL of the incoming payment that is being paid.
+         * @example https://ilp.interledger-test.dev/incoming-payments/08394f02-7b7b-45e2-b645-51d04e7c330c
+         * @example http://ilp.interledger-test.dev/incoming-payments/08394f02-7b7b-45e2-b645-51d04e7c330c
+         * @example https://ilp.interledger-test.dev/incoming-payments/1
          */
         receiver: string;
         /**
          * Incoming Payment
          * @description An **incoming payment** resource represents a payment that will be, is currently being, or has been received by the account.
+         * @example {
+         *       "id": "https://ilp.interledger-test.dev/incoming-payments/016da9d5-c9a4-4c80-a354-86b915a04ff8",
+         *       "walletAddress": "https://ilp.interledger-test.dev/alice/",
+         *       "incomingAmount": {
+         *         "value": "250",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "receivedAmount": {
+         *         "value": "250",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "completed": true,
+         *       "expiresAt": "2022-04-12T23:20:50.52Z",
+         *       "createdAt": "2022-03-12T23:20:50.52Z",
+         *       "metadata": {
+         *         "description": "Hi Mo, this is for the cappuccino I bought for you the other day.",
+         *         "externalRef": "Coffee w/ Mo on 10 March 22"
+         *       }
+         *     }
+         * @example {
+         *       "id": "https://ilp.interledger-test.dev/incoming-payments/456da9d5-c9a4-4c80-a354-86b915a04ff8",
+         *       "walletAddress": "https://ilp.interledger-test.dev/alice/",
+         *       "incomingAmount": {
+         *         "value": "2500",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "receivedAmount": {
+         *         "value": "0",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "expiresAt": "2022-04-12T23:20:50.52Z",
+         *       "createdAt": "2022-03-12T23:20:50.52Z"
+         *     }
          */
         "incoming-payment": {
             /**
@@ -282,6 +322,16 @@ export interface components {
         /**
          * Public Incoming Payment
          * @description An **incoming payment** resource with public details.
+         * @example {
+         *       "receivedAmount": {
+         *         "value": "0",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       }
+         *     }
+         * @example {
+         *       "authServer": "https://auth.ilp.interledger-test.dev"
+         *     }
          */
         "public-incoming-payment": {
             receivedAmount?: components["schemas"]["amount"];
@@ -294,6 +344,53 @@ export interface components {
         /**
          * Outgoing Payment
          * @description An **outgoing payment** resource represents a payment that will be, is currently being, or has previously been, sent from the wallet address.
+         * @example {
+         *       "id": "https://ilp.interledger-test.dev/outgoing-payments/8c68d3cc-0a0f-4216-98b4-4fa44a6c88cf",
+         *       "walletAddress": "https://ilp.interledger-test.dev/alice/",
+         *       "failed": false,
+         *       "receiver": "https://ilp.interledger-test.dev/aplusvideo/incoming-payments/45d495ad-b763-4882-88d7-aa14d261686e",
+         *       "receiveAmount": {
+         *         "value": "2500",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "debitAmount": {
+         *         "value": "2600",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "sentAmount": {
+         *         "value": "2500",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "createdAt": "2022-03-12T23:20:50.52Z",
+         *       "metadata": {
+         *         "description": "APlusVideo subscription",
+         *         "externalRef": "customer: 847458475"
+         *       }
+         *     }
+         * @example {
+         *       "id": "https://ilp.interledger-test.dev/outgoing-payments/0cffa5a4-58fd-4cc8-8e01-7145c72bf07c",
+         *       "walletAddress": "https://ilp.interledger-test.dev/alice/",
+         *       "failed": false,
+         *       "receiver": "https://ilp.interledger-test.dev/shoeshop/2fe92c6f-ef0d-487c-8759-3784eae6bce9",
+         *       "debitAmount": {
+         *         "value": "7126",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "sentAmount": {
+         *         "value": "7026",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "createdAt": "2022-03-12T23:20:50.52Z",
+         *       "metadata": {
+         *         "description": "Thank you for your purchase at ShoeShop!",
+         *         "externalRef": "INV2022-8943756"
+         *       }
+         *     }
          */
         "outgoing-payment": {
             /**
@@ -337,6 +434,68 @@ export interface components {
         /**
          * Outgoing Payment With Grant Spent Amounts
          * @description An **outgoing payment** resource represents a payment that will be, is currently being, or has previously been, sent from the wallet address.
+         * @example {
+         *       "id": "https://ilp.interledger-test.dev/outgoing-payments/8c68d3cc-0a0f-4216-98b4-4fa44a6c88cf",
+         *       "walletAddress": "https://ilp.interledger-test.dev/alice/",
+         *       "failed": false,
+         *       "receiver": "https://ilp.interledger-test.dev/aplusvideo/incoming-payments/45d495ad-b763-4882-88d7-aa14d261686e",
+         *       "receiveAmount": {
+         *         "value": "2500",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "debitAmount": {
+         *         "value": "2600",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "sentAmount": {
+         *         "value": "2500",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "grantSpentDebitAmount": {
+         *         "value": "2600",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "createdAt": "2022-03-12T23:20:50.52Z",
+         *       "metadata": {
+         *         "description": "APlusVideo subscription",
+         *         "externalRef": "customer: 847458475"
+         *       }
+         *     }
+         * @example {
+         *       "id": "https://ilp.interledger-test.dev/outgoing-payments/8c68d3cc-0a0f-4216-98b4-4fa44a6c88cf",
+         *       "walletAddress": "https://ilp.interledger-test.dev/alice/",
+         *       "failed": false,
+         *       "receiver": "https://ilp.interledger-test.dev/aplusvideo/incoming-payments/45d495ad-b763-4882-88d7-aa14d261686e",
+         *       "receiveAmount": {
+         *         "value": "2500",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "debitAmount": {
+         *         "value": "2600",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "sentAmount": {
+         *         "value": "2500",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "grantSpentReceiveAmount": {
+         *         "value": "2500",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "createdAt": "2022-03-12T23:20:50.52Z",
+         *       "metadata": {
+         *         "description": "APlusVideo subscription",
+         *         "externalRef": "customer: 847458475"
+         *       }
+         *     }
          */
         "outgoing-payment-with-spent-amounts": {
             /**
@@ -384,6 +543,47 @@ export interface components {
         /**
          * Quote
          * @description A **quote** resource represents the quoted amount details with which an Outgoing Payment may be created.
+         * @example {
+         *       "id": "https://ilp.interledger-test.dev/quotes/ab03296b-0c8b-4776-b94e-7ee27d868d4d",
+         *       "walletAddress": "https://ilp.interledger-test.dev/alice/",
+         *       "receiver": "https://ilp.interledger-test.dev/shoeshop/incoming-payments/2fe92c6f-ef0d-487c-8759-3784eae6bce9",
+         *       "receiveAmount": {
+         *         "value": "2500",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "debitAmount": {
+         *         "value": "2600",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "sentAmount": {
+         *         "value": "2500",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "method": "ilp",
+         *       "createdAt": "2022-03-12T23:20:50.52Z",
+         *       "expiresAt": "2022-04-12T23:20:50.52Z"
+         *     }
+         * @example {
+         *       "id": "https://ilp.interledger-test.dev/quotes/8c68d3cc-0a0f-4216-98b4-4fa44a6c88cf",
+         *       "walletAddress": "https://ilp.interledger-test.dev/alice/",
+         *       "receiver": "https://ilp.interledger-test.dev/aplusvideo/incoming-payments/45d495ad-b763-4882-88d7-aa14d261686e",
+         *       "debitAmount": {
+         *         "value": "7126",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "sentAmount": {
+         *         "value": "7026",
+         *         "assetCode": "USD",
+         *         "assetScale": 2
+         *       },
+         *       "method": "ilp",
+         *       "createdAt": "2022-03-12T23:20:50.52Z",
+         *       "expiresAt": "2022-04-12T23:20:50.52Z"
+         *     }
          */
         quote: {
             /**
@@ -400,7 +600,7 @@ export interface components {
             receiver: components["schemas"]["receiver"];
             /** @description The total amount that should be received by the receiver when the corresponding outgoing payment has been paid. */
             receiveAmount: components["schemas"]["amount"];
-            /** @description The total amount that should be deducted from the sender's account when the corresponding outgoing payment has been paid.  */
+            /** @description The total amount that should be deducted from the sender's account when the corresponding outgoing payment has been paid. */
             debitAmount: components["schemas"]["amount"];
             method: components["schemas"]["payment-method"];
             /** @description The date and time when the calculated `debitAmount` is no longer valid. */
@@ -411,6 +611,14 @@ export interface components {
              */
             createdAt: string;
         };
+        /**
+         * @example {
+         *       "startCursor": "241de237-f989-42be-926d-c0c1fca57708",
+         *       "endCursor": "315581f8-9967-45a0-9cd3-87b60b6d6414",
+         *       "hasNextPage": true,
+         *       "hasPreviousPage": true
+         *     }
+         */
         "page-info": {
             /** @description Cursor corresponding to the first element in the result array. */
             startCursor?: string;
@@ -423,6 +631,13 @@ export interface components {
         };
         /** @enum {string} */
         "payment-method": "ilp";
+        /**
+         * @example {
+         *       "type": "string",
+         *       "ilpAddress": "string",
+         *       "sharedSecret": "string"
+         *     }
+         */
         "ilp-payment-method": {
             /** @enum {string} */
             type: "ilp";
@@ -559,9 +774,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        /** @description A subset of the incoming payments schema is accepted as input to create a new incoming payment.
+        /**
+         * @description A subset of the incoming payments schema is accepted as input to create a new incoming payment.
          *
-         *     The `incomingAmount` must use the same `assetCode` and `assetScale` as the wallet address. */
+         *     The `incomingAmount` must use the same `assetCode` and `assetScale` as the wallet address.
+         */
         requestBody: {
             content: {
                 "application/json": {
@@ -645,11 +862,13 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        /** @description A subset of the outgoing payments schema is accepted as input to create a new outgoing payment.
+        /**
+         * @description A subset of the outgoing payments schema is accepted as input to create a new outgoing payment.
          *
          *     The `debitAmount` must use the same `assetCode` and `assetScale` as the wallet address.
          *
-         *     Either provide a `quoteId` to create an outgoing payment based on a quote or provide `incomingPayment` and `debitAmount` to create an outgoing payment directly from an incoming payment. */
+         *     Either provide a `quoteId` to create an outgoing payment based on a quote or provide `incomingPayment` and `debitAmount` to create an outgoing payment directly from an incoming payment.
+         */
         requestBody: {
             content: {
                 "application/json": {
@@ -705,9 +924,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        /** @description A subset of the quotes schema is accepted as input to create a new quote.
+        /**
+         * @description A subset of the quotes schema is accepted as input to create a new quote.
          *
-         *     The quote must be created with a (`debitAmount` xor `receiveAmount`) unless the `receiver` is an Incoming Payment which has an `incomingAmount`. */
+         *     The quote must be created with a (`debitAmount` xor `receiveAmount`) unless the `receiver` is an Incoming Payment which has an `incomingAmount`.
+         */
         requestBody: {
             content: {
                 "application/json": {
