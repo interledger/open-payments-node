@@ -61,7 +61,7 @@ describe('quote', (): void => {
           },
           openApiValidators.failedValidator
         )
-      ).rejects.toThrowError()
+      ).rejects.toBeTruthy()
       scope.done()
     })
   })
@@ -94,7 +94,7 @@ describe('quote', (): void => {
           openApiValidators.failedValidator,
           { receiver: quote.receiver, method: 'ilp', walletAddress }
         )
-      ).rejects.toThrowError()
+      ).rejects.toBeTruthy()
       scope.done()
     })
   })

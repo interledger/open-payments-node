@@ -112,7 +112,7 @@ const parseKey = (deps: { logger: Logger }, privateKey: KeyLike): KeyObject => {
     }
   }
 
-  const keyFilePath = path.resolve(process.cwd(), privateKey)
+  const keyFilePath = path.resolve(process.cwd(), privateKey as string)
 
   if (fs.existsSync(keyFilePath)) {
     deps.logger.debug(`Loading key from file path: ${keyFilePath}`)

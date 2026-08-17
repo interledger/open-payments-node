@@ -122,7 +122,7 @@ describe('outgoing-payment', (): void => {
           },
           openApiValidators.failedValidator
         )
-      ).rejects.toThrowError(OpenPaymentsClientError)
+      ).rejects.toBeInstanceOf(OpenPaymentsClientError)
       scope.done()
     })
   })
@@ -406,7 +406,7 @@ describe('outgoing-payment', (): void => {
             walletAddress
           }
         )
-      ).rejects.toThrow(OpenPaymentsClientError)
+      ).rejects.toBeInstanceOf(OpenPaymentsClientError)
       scope.done()
     })
   })
