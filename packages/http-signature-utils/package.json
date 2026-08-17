@@ -24,13 +24,13 @@
     "prepack": "pnpm build"
   },
   "dependencies": {
-    "http-message-signatures": "^1.0.4",
+    "http-message-signatures": "^1.0.6",
     "httpbis-digest-headers": "^1.0.0",
-    "jose": "^4.13.1",
-    "uuid": "^9.0.0"
+    "jose": "^4.15.9",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/node": "^20.12.7",
-    "@types/uuid": "^9.0.0"
+    "@types/node": "^20.19.43",
+    "@types/uuid": "^9.0.8"
   }
 }
