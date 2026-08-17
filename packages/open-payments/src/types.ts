@@ -78,8 +78,7 @@ type QuoteArgsWithReceiveAmount = QuoteArgsBase & {
   receiveAmount?: RSComponents['schemas']['quote']['receiveAmount']
 }
 export type CreateQuoteArgs =
-  | QuoteArgsWithDebitAmount
-  | QuoteArgsWithReceiveAmount
+  QuoteArgsWithDebitAmount | QuoteArgsWithReceiveAmount
 
 export const getASPath = <P extends keyof ASPaths>(path: P): string =>
   path as string
@@ -176,9 +175,7 @@ export type AccessType =
   | ASComponents['schemas']['access-quote']['type']
 
 export type AccessAction = (
-  | AccessIncomingActions
-  | AccessOutgoingActions
-  | AccessQuoteActions
+  AccessIncomingActions | AccessOutgoingActions | AccessQuoteActions
 )[number]
 
 export const AccessType: {

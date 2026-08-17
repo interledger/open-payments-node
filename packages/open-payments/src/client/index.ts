@@ -76,16 +76,13 @@ interface AuthenticatedRequestArgs {
 }
 
 export interface GrantOrTokenRequestArgs
-  extends UnauthenticatedResourceRequestArgs,
-    AuthenticatedRequestArgs {}
+  extends UnauthenticatedResourceRequestArgs, AuthenticatedRequestArgs {}
 
 export interface ResourceRequestArgs
-  extends UnauthenticatedResourceRequestArgs,
-    AuthenticatedRequestArgs {}
+  extends UnauthenticatedResourceRequestArgs, AuthenticatedRequestArgs {}
 
 export interface CollectionRequestArgs
-  extends UnauthenticatedResourceRequestArgs,
-    AuthenticatedRequestArgs {
+  extends UnauthenticatedResourceRequestArgs, AuthenticatedRequestArgs {
   /**
    * The wallet address URL of the requested collection.
    *
@@ -306,8 +303,10 @@ export type CreateAuthenticatedClientArgs = BaseAuthenticatedClientArgs &
 export type CreateAuthenticatedClientWithReqInterceptorArgs =
   BaseAuthenticatedClientArgs & InterceptorConfig
 
-export interface AuthenticatedClient
-  extends Omit<UnauthenticatedClient, 'incomingPayment'> {
+export interface AuthenticatedClient extends Omit<
+  UnauthenticatedClient,
+  'incomingPayment'
+> {
   incomingPayment: IncomingPaymentRoutes
   outgoingPayment: OutgoingPaymentRoutes
   grant: GrantRoutes
