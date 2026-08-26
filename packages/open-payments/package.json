@@ -30,7 +30,7 @@
     "test": "jest --passWithNoTests"
   },
   "devDependencies": {
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.3.0",
     "@types/uuid": "^9.0.8",
     "nock": "14.0.17",
     "openapi-typescript": "^7.13.0"
