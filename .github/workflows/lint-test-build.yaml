@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - uses: ./.github/workflows/env-setup
       - run: pnpm checks
 
@@ -23,9 +23,9 @@ jobs:
     needs: checkout
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
         with:
-            submodules: true      
+          submodules: true
       - uses: ./.github/workflows/env-setup
       - run: pnpm --filter openapi test
 
@@ -34,14 +34,14 @@ jobs:
     needs: checkout
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
         with:
-            submodules: true
+          submodules: true
       - uses: ./.github/workflows/env-setup
       - name: Generate open-payments types
         run: pnpm --filter open-payments generate:types
       - name: Check for newly generated open-payments types
-        uses: tj-actions/verify-changed-files@v17
+        uses: tj-actions/verify-changed-files@v20
         id: verify-changed-files
         with:
           files: |
@@ -57,7 +57,7 @@ jobs:
     needs: checkout
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - uses: ./.github/workflows/env-setup
       - run: pnpm --filter http-signature-utils test
 
