@@ -75,6 +75,14 @@ export interface components {
         /**
          * Wallet Address
          * @description A **wallet address** resource is the root of the API and contains the public details of the financial account represented by the Wallet Address that is also the service endpoint URL.
+         * @example {
+         *       "id": "https://ilp.interledger-test.dev/alice",
+         *       "publicName": "Alice",
+         *       "assetCode": "USD",
+         *       "assetScale": 2,
+         *       "authServer": "https://ilp.interledger-test.dev/auth",
+         *       "resourceServer": "https://ilp.interledger-test.dev/op"
+         *     }
          */
         "wallet-address": {
             /**
@@ -110,6 +118,18 @@ export interface components {
         /**
          * JSON Web Key Set document
          * @description A JSON Web Key Set document according to [rfc7517](https://datatracker.ietf.org/doc/html/rfc7517) listing the keys associated with this wallet address. These keys are used to sign requests made by this wallet address.
+         * @example {
+         *       "keys": [
+         *         {
+         *           "kid": "key-1",
+         *           "alg": "EdDSA",
+         *           "use": "sig",
+         *           "kty": "OKP",
+         *           "crv": "Ed25519",
+         *           "x": "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo"
+         *         }
+         *       ]
+         *     }
          */
         "json-web-key-set": {
             readonly keys: components["schemas"]["json-web-key"][];
@@ -117,6 +137,20 @@ export interface components {
         /**
          * Ed25519 Public Key
          * @description A JWK representation of an Ed25519 Public Key
+         * @example {
+         *       "kid": "key-1",
+         *       "use": "sig",
+         *       "kty": "OKP",
+         *       "crv": "Ed25519",
+         *       "x": "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo"
+         *     }
+         * @example {
+         *       "kid": "2022-09-02",
+         *       "use": "sig",
+         *       "kty": "OKP",
+         *       "crv": "Ed25519",
+         *       "x": "oy0L_vTygNE4IogRyn_F5GmHXdqYVjIXkWs2jky7zsI"
+         *     }
          */
         "json-web-key": {
             kid: string;

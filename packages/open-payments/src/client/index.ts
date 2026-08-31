@@ -76,16 +76,13 @@ interface AuthenticatedRequestArgs {
 }
 
 export interface GrantOrTokenRequestArgs
-  extends UnauthenticatedResourceRequestArgs,
-    AuthenticatedRequestArgs {}
+  extends UnauthenticatedResourceRequestArgs, AuthenticatedRequestArgs {}
 
 export interface ResourceRequestArgs
-  extends UnauthenticatedResourceRequestArgs,
-    AuthenticatedRequestArgs {}
+  extends UnauthenticatedResourceRequestArgs, AuthenticatedRequestArgs {}
 
 export interface CollectionRequestArgs
-  extends UnauthenticatedResourceRequestArgs,
-    AuthenticatedRequestArgs {
+  extends UnauthenticatedResourceRequestArgs, AuthenticatedRequestArgs {
   /**
    * The wallet address URL of the requested collection.
    *
@@ -112,7 +109,7 @@ const parseKey = (deps: { logger: Logger }, privateKey: KeyLike): KeyObject => {
     }
   }
 
-  const keyFilePath = path.resolve(process.cwd(), privateKey)
+  const keyFilePath = path.resolve(process.cwd(), privateKey as string)
 
   if (fs.existsSync(keyFilePath)) {
     deps.logger.debug(`Loading key from file path: ${keyFilePath}`)
@@ -306,8 +303,10 @@ export type CreateAuthenticatedClientArgs = BaseAuthenticatedClientArgs &
 export type CreateAuthenticatedClientWithReqInterceptorArgs =
   BaseAuthenticatedClientArgs & InterceptorConfig
 
-export interface AuthenticatedClient
-  extends Omit<UnauthenticatedClient, 'incomingPayment'> {
+export interface AuthenticatedClient extends Omit<
+  UnauthenticatedClient,
+  'incomingPayment'
+> {
   incomingPayment: IncomingPaymentRoutes
   outgoingPayment: OutgoingPaymentRoutes
   grant: GrantRoutes

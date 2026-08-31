@@ -179,9 +179,8 @@ import express from 'express'
   )
   console.log(outgoingPaymentGrant.interact.redirect)
 
-  const interactRef = await getInteractRefFromTempCallbackServer(
-    callbackServerPort
-  )
+  const interactRef =
+    await getInteractRefFromTempCallbackServer(callbackServerPort)
 
   await readline
     .createInterface({ input: process.stdin, output: process.stdout })

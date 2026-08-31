@@ -102,6 +102,9 @@ export interface components {
          * Receiver
          * Format: uri
          * @description The URL of the incoming payment that is being paid.
+         * @example https://ilp.interledger-test.dev/incoming-payments/08394f02-7b7b-45e2-b645-51d04e7c330c
+         * @example http://ilp.interledger-test.dev/incoming-payments/08394f02-7b7b-45e2-b645-51d04e7c330c
+         * @example https://ilp.interledger-test.dev/incoming-payments/1
          */
         receiver: string;
         /** @description A description of the rights associated with this access token. */
@@ -245,6 +248,9 @@ export interface components {
         /**
          * Interval
          * @description [ISO8601 repeating interval](https://en.wikipedia.org/wiki/ISO_8601#Repeating_intervals)
+         * @example R11/2022-08-24T14:15:22Z/P1M
+         * @example R/2017-03-01T13:00:00Z/2018-05-11T15:30:00Z
+         * @example R-1/P1Y2M10DT2H30M/2022-05-11T15:30:00Z
          */
         interval: string;
         /**
@@ -326,6 +332,14 @@ export interface components {
         /**
          * Ed25519 Public Key
          * @description A JWK representation of an Ed25519 Public Key
+         * @example {
+         *       "kid": "key-1",
+         *       "alg": "EdDSA",
+         *       "use": "sig",
+         *       "kty": "OKP",
+         *       "crv": "Ed25519",
+         *       "x": "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo"
+         *     }
          */
         "json-web-key": {
             kid: string;
@@ -438,8 +452,10 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    /** @description The interaction reference generated for this
-                     *     interaction by the AS. */
+                    /**
+                     * @description The interaction reference generated for this
+                     *     interaction by the AS.
+                     */
                     interact_ref?: string;
                 };
             };

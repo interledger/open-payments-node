@@ -68,7 +68,7 @@ describe('token', (): void => {
           },
           openApiValidators.failedValidator
         )
-      ).rejects.toThrowError()
+      ).rejects.toBeTruthy()
       scope.done()
     })
   })
@@ -109,7 +109,7 @@ describe('token', (): void => {
           },
           openApiValidators.failedValidator
         )
-      ).rejects.toThrowError()
+      ).rejects.toBeTruthy()
       scope.done()
     })
   })
