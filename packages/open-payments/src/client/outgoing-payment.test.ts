@@ -16,7 +16,6 @@ import {
   createTestDeps
 } from '../test/helpers'
 import nock from 'nock'
-import { v4 as uuid } from 'uuid'
 import * as requestors from './requests'
 import { OpenPaymentsClientError } from './error'
 import assert from 'assert'
@@ -133,7 +132,7 @@ describe('outgoing-payment', (): void => {
         first        | cursor
         ${undefined} | ${undefined}
         ${1}         | ${undefined}
-        ${5}         | ${uuid()}
+        ${5}         | ${crypto.randomUUID()}
       `(
         'returns outgoing payment list',
         async ({ first, cursor }): Promise<void> => {
@@ -174,8 +173,8 @@ describe('outgoing-payment', (): void => {
     describe('backward pagination', (): void => {
       test.each`
         last         | cursor
-        ${undefined} | ${uuid()}
-        ${5}         | ${uuid()}
+        ${undefined} | ${crypto.randomUUID()}
+        ${5}         | ${crypto.randomUUID()}
       `(
         'returns outgoing payment list',
         async ({ last, cursor }): Promise<void> => {
@@ -287,8 +286,8 @@ describe('outgoing-payment', (): void => {
   })
 
   describe('createOutgoingPayment', (): void => {
-    const quoteId_ = `${serverAddress}/quotes/${uuid()}`
-    const incomingPayment = `${serverAddress}/incoming-payments/${uuid()}`
+    const quoteId_ = `${serverAddress}/quotes/${crypto.randomUUID()}`
+    const incomingPayment = `${serverAddress}/incoming-payments/${crypto.randomUUID()}`
     const debitAmount = {
       value: '2500',
       assetCode: 'USD',
@@ -314,7 +313,7 @@ describe('outgoing-payment', (): void => {
         assert(!(quoteId && debitAmount))
 
         const outgoingPayment = mockOutgoingPaymentWithSpentAmounts({
-          quoteId: quoteId || uuid(),
+          quoteId: quoteId || crypto.randomUUID(),
           metadata
         })
 
@@ -368,7 +367,7 @@ describe('outgoing-payment', (): void => {
           },
           openApiValidators.successfulValidator,
           {
-            quoteId: uuid(),
+            quoteId: crypto.randomUUID(),
             walletAddress
           }
         )
@@ -402,7 +401,7 @@ describe('outgoing-payment', (): void => {
           },
           openApiValidators.failedValidator,
           {
-            quoteId: uuid(),
+            quoteId: crypto.randomUUID(),
             walletAddress
           }
         )
@@ -599,7 +598,7 @@ describe('outgoing-payment', (): void => {
 
           const url = `${serverAddress}/outgoing-payments`
           const outgoingPaymentCreateArgs = {
-            quoteId: uuid(),
+            quoteId: crypto.randomUUID(),
             walletAddress
           }
 

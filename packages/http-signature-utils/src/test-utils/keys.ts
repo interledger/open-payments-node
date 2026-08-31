@@ -1,5 +1,4 @@
 import crypto from 'crypto'
-import { v4 } from 'uuid'
 
 import { generateJwk, JWK } from '../utils/jwk'
 
@@ -13,7 +12,7 @@ export function generateTestKeys(): TestKeys {
 
   return {
     publicKey: generateJwk({
-      keyId: v4(),
+      keyId: crypto.randomUUID(),
       privateKey
     }),
     privateKey

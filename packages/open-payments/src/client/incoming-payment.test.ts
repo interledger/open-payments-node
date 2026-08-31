@@ -20,7 +20,6 @@ import {
   mockPublicIncomingPayment
 } from '../test/helpers'
 import nock from 'nock'
-import { v4 as uuid } from 'uuid'
 import * as requestors from './requests'
 import { getRSPath } from '../types'
 import { OpenPaymentsClientError } from './error'
@@ -333,7 +332,7 @@ describe('incoming-payment', (): void => {
         first        | cursor
         ${undefined} | ${undefined}
         ${1}         | ${undefined}
-        ${5}         | ${uuid()}
+        ${5}         | ${crypto.randomUUID()}
       `(
         'returns incoming payments list',
         async ({ first, cursor }): Promise<void> => {
@@ -375,8 +374,8 @@ describe('incoming-payment', (): void => {
     describe('backward pagination', (): void => {
       test.each`
         last         | cursor
-        ${undefined} | ${uuid()}
-        ${5}         | ${uuid()}
+        ${undefined} | ${crypto.randomUUID()}
+        ${5}         | ${crypto.randomUUID()}
       `(
         'returns incoming payments list',
         async ({ last, cursor }): Promise<void> => {

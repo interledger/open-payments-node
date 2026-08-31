@@ -22,7 +22,6 @@ import {
   OutgoingPaymentWithSpentAmounts,
   Subject
 } from '../types'
-import { v4 as uuid } from 'uuid'
 import { ResponseValidator, ValidationError } from '@interledger/openapi'
 import base64url from 'base64url'
 import { BaseDeps } from '../client'
@@ -60,8 +59,8 @@ export const mockOpenApiResponseValidators = () => ({
 })
 
 export const mockJwk = (overrides?: Partial<JWK>): JWK => ({
-  x: uuid(),
-  kid: uuid(),
+  x: crypto.randomUUID(),
+  kid: crypto.randomUUID(),
   alg: 'EdDSA',
   kty: 'OKP',
   crv: 'Ed25519',
@@ -89,7 +88,7 @@ export const mockWalletAddress = (
 export const mockIncomingPayment = (
   overrides?: Partial<IncomingPayment>
 ): IncomingPayment => ({
-  id: `https://example.com/.well-known/pay/incoming-payments/${uuid()}`,
+  id: `https://example.com/.well-known/pay/incoming-payments/${crypto.randomUUID()}`,
   walletAddress: 'https://example.com/.well-known/pay',
   completed: false,
   incomingAmount: {
@@ -109,7 +108,7 @@ export const mockIncomingPayment = (
 export const mockIncomingPaymentWithPaymentMethods = (
   overrides?: Partial<IncomingPaymentWithPaymentMethods>
 ): IncomingPaymentWithPaymentMethods => ({
-  id: `https://example.com/.well-known/pay/incoming-payments/${uuid()}`,
+  id: `https://example.com/.well-known/pay/incoming-payments/${crypto.randomUUID()}`,
   walletAddress: 'https://example.com/.well-known/pay',
   completed: false,
   incomingAmount: {
@@ -171,7 +170,7 @@ export const mockIncomingPaymentPaginationResult = (
 export const mockOutgoingPayment = (
   overrides?: Partial<OutgoingPayment>
 ): OutgoingPayment => ({
-  id: `https://example.com/.well-known/pay/outgoing-payments/${uuid()}`,
+  id: `https://example.com/.well-known/pay/outgoing-payments/${crypto.randomUUID()}`,
   walletAddress: 'https://example.com/.well-known/pay',
   failed: false,
   debitAmount: {
@@ -189,8 +188,8 @@ export const mockOutgoingPayment = (
     assetScale: 2,
     value: '10'
   },
-  quoteId: uuid(),
-  receiver: uuid(),
+  quoteId: crypto.randomUUID(),
+  receiver: crypto.randomUUID(),
   metadata: { externalRef: 'INV #1', description: 'some description' },
   createdAt: new Date().toISOString(),
   ...overrides
@@ -323,7 +322,7 @@ export const mockGrantRequest = (
 export const mockContinuationRequest = (
   overrides?: Partial<GrantContinuationRequest>
 ): GrantContinuationRequest => ({
-  interact_ref: uuid(),
+  interact_ref: crypto.randomUUID(),
   ...overrides
 })
 
@@ -332,7 +331,7 @@ export const mockAccessToken = (
 ): AccessToken => ({
   access_token: {
     value: '99C36C2A4DB5BEBC',
-    manage: `http://example.com/token/${uuid()}`,
+    manage: `http://example.com/token/${crypto.randomUUID()}`,
     access: [
       {
         type: 'incoming-payment',
@@ -345,7 +344,7 @@ export const mockAccessToken = (
 })
 
 export const mockQuote = (overrides?: Partial<Quote>): Quote => ({
-  id: `https://example.com/.well-known/pay/quotes/${uuid()}`,
+  id: `https://example.com/.well-known/pay/quotes/${crypto.randomUUID()}`,
   receiver: 'https://example.com/.well-known/peer',
   walletAddress: 'https://example.com/.well-known/pay',
   debitAmount: {
