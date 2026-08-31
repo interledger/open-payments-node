@@ -37,8 +37,7 @@
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/koa": "2.15.2",
-    "@types/uuid": "^9.0.8",
-    "node-mocks-http": "^1.18.1",
-    "uuid": "^9.0.1"
+    "@types/node": "^26.3.0",
+    "node-mocks-http": "^1.18.1"
   }
 }

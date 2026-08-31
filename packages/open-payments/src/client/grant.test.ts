@@ -8,7 +8,6 @@ import {
   mockSubject
 } from '../test/helpers'
 import * as requestors from './requests'
-import { v4 as uuid } from 'uuid'
 import { getAuthServerOpenAPI } from '../openapi'
 import { BaseDeps } from '.'
 import { GrantRequest } from '../types'
@@ -331,7 +330,7 @@ describe('grant', (): void => {
             .mockImplementation(mockResponseValidator as any)
 
           const postSpy = jest.spyOn(requestors, 'post')
-          const interact_ref = uuid()
+          const interact_ref = crypto.randomUUID()
 
           await createGrantRoutes({
             openApi,

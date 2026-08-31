@@ -1,6 +1,5 @@
 import Koa from 'koa'
 import * as httpMocks from 'node-mocks-http'
-import { v4 as uuid } from 'uuid'
 import assert from 'assert'
 import {
   createOpenAPI,
@@ -62,7 +61,7 @@ describe('OpenAPI Validator', (): void => {
     let next: jest.MockedFunction<() => Promise<void>>
     let validatePostMiddleware: AppMiddleware
     let validateListMiddleware: AppMiddleware
-    const accountId = uuid()
+    const accountId = crypto.randomUUID()
 
     beforeAll((): void => {
       validatePostMiddleware = createValidatorMiddleware(openApi, {
@@ -230,7 +229,7 @@ describe('OpenAPI Validator', (): void => {
           pagination: { hasNextPage: false, hasPreviousPage: false },
           result: [
             {
-              id: uuid(),
+              id: crypto.randomUUID(),
               walletAddress: WALLET_ADDRESS,
               completed: false,
               receivedAmount: { value: '0', assetCode: 'USD', assetScale: 2 },
@@ -309,7 +308,7 @@ describe('OpenAPI Validator', (): void => {
     )
 
     const body = {
-      id: `https://${accountId}/incoming-payments/${uuid()}`,
+      id: `https://${accountId}/incoming-payments/${crypto.randomUUID()}`,
       walletAddress: 'https://openpayments.dev/alice',
       receivedAmount: {
         value: '0',

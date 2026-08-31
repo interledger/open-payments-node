@@ -74,16 +74,10 @@ importers:
       jose:
         specifier: ^4.15.9
         version: 4.15.9
-      uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
     devDependencies:
       '@types/node':
         specifier: ^26.3.0
         version: 26.3.0
-      '@types/uuid':
-        specifier: ^9.0.8
-        version: 9.0.8
 
   packages/open-payments:
     dependencies:
@@ -105,16 +99,10 @@ importers:
       pino:
         specifier: ^8.21.0
         version: 8.21.0
-      uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
     devDependencies:
       '@types/node':
         specifier: ^26.3.0
         version: 26.3.0
-      '@types/uuid':
-        specifier: ^9.0.8
-        version: 9.0.8
       nock:
         specifier: 14.0.17
         version: 14.0.17
@@ -158,15 +146,12 @@ importers:
       '@types/koa':
         specifier: 2.15.2
         version: 2.15.2
-      '@types/uuid':
-        specifier: ^9.0.8
-        version: 9.0.8
+      '@types/node':
+        specifier: ^26.3.0
+        version: 26.3.0
       node-mocks-http:
         specifier: ^1.18.1
         version: 1.18.1(@types/express@5.0.6)(@types/node@26.3.0)
-      uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
 
 packages:
 
@@ -920,9 +905,6 @@ packages:
 
   '@types/strip-json-comments@0.0.30':
     resolution: {integrity: sha512-7NQmHra/JILCd1QqpSzl8+mJRc8ZHz3uDm8YV1Ks9IhK0epEiTw8aIErbvH9PI+6XbqhyIQy3462nEsn7UVzjQ==}
-
-  '@types/uuid@9.0.8':
-    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
@@ -3199,11 +3181,6 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
-    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
-    hasBin: true
-
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
@@ -4330,8 +4307,6 @@ snapshots:
   '@types/strip-bom@3.0.0': {}
 
   '@types/strip-json-comments@0.0.30': {}
-
-  '@types/uuid@9.0.8': {}
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -6785,8 +6760,6 @@ snapshots:
       punycode: 2.3.1
 
   util-deprecate@1.0.2: {}
-
-  uuid@9.0.1: {}
 
   v8-compile-cache-lib@3.0.1: {}
 
