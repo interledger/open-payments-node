@@ -1,5 +1,13 @@
 # @interledger/http-signature-utils
 
+## 2.0.4
+
+### Patch Changes
+
+- 77c15dc: Updated dependencies (`http-message-signatures`, `jose`, `uuid`) and dev dependencies.
+- 9da7d9e: Removed the `uuid` dependency in favor of the global `crypto.randomUUID()` API.
+- eb2a9a0: Removed the `jose` dependency in favor of the global `crypto.subtle` (Web Crypto) API.
+
 ## 2.0.3
 
 ### Patch Changes
