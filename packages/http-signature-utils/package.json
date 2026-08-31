@@ -25,8 +25,7 @@
   },
   "dependencies": {
     "http-message-signatures": "^1.0.6",
-    "httpbis-digest-headers": "^1.0.0",
-    "jose": "^4.15.9"
+    "httpbis-digest-headers": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^26.3.0"

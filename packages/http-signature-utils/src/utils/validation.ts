@@ -1,7 +1,5 @@
-import * as crypto from 'crypto'
 import { RequestLike } from './signatures'
 import { verifyContentDigest } from 'httpbis-digest-headers'
-import { importJWK } from 'jose'
 import { JWK } from './jwk'
 
 export function validateSignatureHeaders(request: RequestLike): boolean {
@@ -35,14 +33,16 @@ export async function validateSignature(
     return false
   }
 
-  const publicKey = (await importJWK({ ...clientKey })) as crypto.KeyLike
-  const data = Buffer.from(challenge)
-  return crypto.verify(
-    null,
-    data,
-    publicKey,
-    Buffer.from(sig.replace('sig1=', ''), 'base64')
+  const publicKey = await crypto.subtle.importKey(
+    'jwk',
+    clientKey,
+    { name: 'Ed25519' },
+    false,
+    ['verify']
   )
+  const data = Buffer.from(challenge)
+  const signature = Buffer.from(sig.replace('sig1=', ''), 'base64')
+  return crypto.subtle.verify({ name: 'Ed25519' }, publicKey, signature, data)
 }
 
 function sigInputToChallenge(
