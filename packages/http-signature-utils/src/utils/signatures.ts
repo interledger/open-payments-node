@@ -1,26 +1,56 @@
 import { type KeyLike } from 'crypto'
-import { httpbis, createSigner, Request } from 'http-message-signatures'
+import {
+  httpbis,
+  createSigner,
+  Request,
+  type SigningKey
+} from 'http-message-signatures'
 
 export interface RequestLike extends Request {
   body?: string
 }
 
-export interface SignOptions {
+export interface Signer {
+  sign(data: Uint8Array): Uint8Array | Promise<Uint8Array>
+}
+
+interface BaseSignOptions {
   request: RequestLike
-  privateKey: KeyLike
   keyId: string
 }
+
+export interface PrivateKeySignOptions extends BaseSignOptions {
+  privateKey: KeyLike
+}
+
+export interface SignerSignOptions extends BaseSignOptions {
+  signer: Signer
+}
+
+export type SignOptions = PrivateKeySignOptions | SignerSignOptions
 
 export interface SignatureHeaders {
   Signature: string
   'Signature-Input': string
 }
 
-export const createSignatureHeaders = async ({
-  request,
-  privateKey,
-  keyId
-}: SignOptions): Promise<SignatureHeaders> => {
+const createSigningKey = (options: SignOptions): SigningKey => {
+  if ('signer' in options) {
+    return {
+      id: options.keyId,
+      alg: 'ed25519',
+      sign: async (data: Buffer): Promise<Buffer> =>
+        Buffer.from(await options.signer.sign(data))
+    }
+  }
+
+  return createSigner(options.privateKey, 'ed25519', options.keyId)
+}
+
+export const createSignatureHeaders = async (
+  options: SignOptions
+): Promise<SignatureHeaders> => {
+  const { request } = options
   const components = ['@method', '@target-uri']
   if (request.headers['Authorization'] || request.headers['authorization']) {
     components.push('authorization')
@@ -29,7 +59,7 @@ export const createSignatureHeaders = async ({
     components.push('content-digest', 'content-length', 'content-type')
   }
 
-  const signingKey = createSigner(privateKey, 'ed25519', keyId)
+  const signingKey = createSigningKey(options)
 
   const { headers } = await httpbis.signMessage(
     {
