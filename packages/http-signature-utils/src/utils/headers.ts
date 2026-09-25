@@ -13,11 +13,11 @@ interface ContentHeaders {
 
 export interface Headers extends SignatureHeaders, Partial<ContentHeaders> {}
 
-const createContentHeaders = (body: string): ContentHeaders => {
+const createContentHeaders = async (body: string): Promise<ContentHeaders> => {
   return {
-    'Content-Digest': createContentDigestHeader(
+    'Content-Digest': await createContentDigestHeader(
       JSON.stringify(JSON.parse(body)),
-      ['sha-512']
+      ['SHA-512']
     ),
     'Content-Length': new TextEncoder().encode(body).length.toString(),
     'Content-Type': 'application/json'
@@ -30,7 +30,7 @@ export const createHeaders = async ({
   keyId
 }: SignOptions): Promise<Headers> => {
   const contentHeaders =
-    request.body && createContentHeaders(request.body as string)
+    request.body && (await createContentHeaders(request.body as string))
 
   if (contentHeaders) {
     request.headers = { ...request.headers, ...contentHeaders }
