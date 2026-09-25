@@ -3,7 +3,9 @@ import { verifyContentDigest } from 'httpbis-digest-headers'
 import { JWK } from './jwk'
 import { decodeBase64 } from './internal'
 
-export function validateSignatureHeaders(request: RequestLike): boolean {
+export async function validateSignatureHeaders(
+  request: RequestLike
+): Promise<boolean> {
   const sig = request.headers['signature']
   const sigInput = request.headers['signature-input']
 
@@ -19,7 +21,7 @@ export function validateSignatureHeaders(request: RequestLike): boolean {
 
   return (
     !!sigInputComponents &&
-    validateSigInputComponents(sigInputComponents, request)
+    (await validateSigInputComponents(sigInputComponents, request))
   )
 }
 
@@ -29,7 +31,7 @@ export async function validateSignature(
 ): Promise<boolean> {
   const sig = request.headers['signature'] as string
   const sigInput = request.headers['signature-input'] as string
-  const challenge = sigInputToChallenge(sigInput, request)
+  const challenge = await sigInputToChallenge(sigInput, request)
   if (!challenge) {
     return false
   }
@@ -47,15 +49,15 @@ export async function validateSignature(
   return crypto.subtle.verify({ name: 'Ed25519' }, publicKey, signature, data)
 }
 
-function sigInputToChallenge(
+async function sigInputToChallenge(
   sigInput: string,
   request: RequestLike
-): string | null {
+): Promise<string | null> {
   const sigInputComponents = getSigInputComponents(sigInput)
 
   if (
     !sigInputComponents ||
-    !validateSigInputComponents(sigInputComponents, request)
+    !(await validateSigInputComponents(sigInputComponents, request))
   )
     return null
 
@@ -88,10 +90,10 @@ function getSigInputComponents(sigInput: string): string[] | null {
     : null
 }
 
-function validateSigInputComponents(
+async function validateSigInputComponents(
   sigInputComponents: string[],
   request: RequestLike
-): boolean {
+): Promise<boolean> {
   // https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol#section-7.3.1
 
   for (const component of sigInputComponents) {
@@ -107,10 +109,10 @@ function validateSigInputComponents(
       request.body &&
       Object.keys(request.body).length > 0 &&
       sigInputComponents.includes('content-digest') &&
-      verifyContentDigest(
+      (await verifyContentDigest(
         request.body,
         request.headers['content-digest'] as string
-      ))
+      )))
 
   return !(
     !isValidContentDigest ||
