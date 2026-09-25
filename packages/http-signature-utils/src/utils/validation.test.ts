@@ -1,6 +1,7 @@
 import { validateSignatureHeaders, validateSignature } from './validation'
 import { createHeaders } from './headers'
 import { RequestLike } from './signatures'
+import { JWK } from './jwk'
 import { TestKeys, generateTestKeys } from '../test-utils/keys'
 import { createContentDigestHeader } from 'httpbis-digest-headers'
 
@@ -53,6 +54,45 @@ describe('Signature Verification', (): void => {
       ).resolves.toEqual(true)
     }
   )
+
+  test('can validate a signature created with a Web Crypto (CryptoKey) private key', async (): Promise<void> => {
+    const keyPair = await crypto.subtle.generateKey('Ed25519', true, [
+      'sign',
+      'verify'
+    ])
+    if (!('privateKey' in keyPair)) {
+      throw new Error('expected a CryptoKeyPair')
+    }
+    const { privateKey, publicKey } = keyPair
+    const jwk = await crypto.subtle.exportKey('jwk', publicKey)
+
+    const request: RequestLike = {
+      headers: {},
+      method: 'GET',
+      url: 'http://example.com/test'
+    }
+
+    const contentAndSigHeaders = await createHeaders({
+      request,
+      privateKey,
+      keyId: 'web-crypto-key'
+    })
+    const lowerHeaders = Object.fromEntries(
+      Object.entries(contentAndSigHeaders).map(([k, v]) => [k.toLowerCase(), v])
+    )
+    request.headers = { ...request.headers, ...lowerHeaders }
+
+    const clientKey: JWK = {
+      kid: 'web-crypto-key',
+      alg: 'EdDSA',
+      kty: 'OKP',
+      crv: 'Ed25519',
+      x: jwk.x as string
+    }
+
+    expect(validateSignatureHeaders(request)).toEqual(true)
+    await expect(validateSignature(clientKey, request)).resolves.toEqual(true)
+  })
 
   test.each`
     title                                                                               | sigInputHeader
