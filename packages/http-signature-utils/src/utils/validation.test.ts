@@ -55,15 +55,15 @@ describe('Signature Verification', (): void => {
   )
 
   test.each`
-    title                                                                               | sigInputHeader
-    ${'fails if a component is not in lower case'}                                      | ${'sig1=("@METHOD" "@target-uri" "content-digest" "content-length" "content-type" "authorization");created=1618884473;keyid="gnap-key"'}
-    ${'fails @method is missing'}                                                       | ${'sig1=("@target-uri" "content-digest" "content-length" "content-type");created=1618884473;keyid="gnap-key"'}
-    ${'fails if @target-uri is missing'}                                                | ${'sig1=("@method" "content-digest" "content-length" "content-type");created=1618884473;keyid="gnap-key"'}
-    ${'fails if @content-digest is missing while body is present'}                      | ${'sig1=("@method" "@target-uri" "content-length" "content-type");created=1618884473;keyid="gnap-key"'}
-    ${'fails if authorization header is present in headers but not in signature input'} | ${'sig1=("@method" "@target-uri" "content-digest" "content-length" "content-type");created=1618884473;keyid="gnap-key"'}
+    title                                                                               | sigInputHeader                                                                                                                              | withAuthorization
+    ${'fails if a component is not in lower case'}                                      | ${'sig1=("@METHOD" "@target-uri" "content-digest" "content-length" "content-type" "authorization");created=1618884473;keyid="gnap-key"'} | ${true}
+    ${'fails @method is missing'}                                                       | ${'sig1=("@target-uri" "content-digest" "content-length" "content-type");created=1618884473;keyid="gnap-key"'}                             | ${false}
+    ${'fails if @target-uri is missing'}                                                | ${'sig1=("@method" "content-digest" "content-length" "content-type");created=1618884473;keyid="gnap-key"'}                                 | ${false}
+    ${'fails if content-digest is missing while body is present'}                       | ${'sig1=("@method" "@target-uri" "content-length" "content-type");created=1618884473;keyid="gnap-key"'}                                    | ${false}
+    ${'fails if authorization header is present in headers but not in signature input'} | ${'sig1=("@method" "@target-uri" "content-digest" "content-length" "content-type");created=1618884473;keyid="gnap-key"'}                   | ${true}
   `(
     'validates signature header and $title',
-    async ({ sigInputHeader }): Promise<void> => {
+    async ({ sigInputHeader, withAuthorization }): Promise<void> => {
       const testRequestBody = JSON.stringify({ foo: 'bar' })
       const request = {
         headers: {
@@ -73,7 +73,9 @@ describe('Signature Verification', (): void => {
           ]),
           'content-length': '1234',
           'signature-input': sigInputHeader,
-          authorization: 'GNAP test-access-token'
+          ...(withAuthorization
+            ? { authorization: 'GNAP test-access-token' }
+            : {})
         },
         method: 'GET',
         url: 'http://example.com/test',
