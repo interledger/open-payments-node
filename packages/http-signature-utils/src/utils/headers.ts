@@ -26,8 +26,7 @@ const createContentHeaders = (body: string): ContentHeaders => {
 
 export const createHeaders = async ({
   request,
-  privateKey,
-  keyId
+  ...signOptions
 }: SignOptions): Promise<Headers> => {
   const contentHeaders =
     request.body && createContentHeaders(request.body as string)
@@ -38,8 +37,7 @@ export const createHeaders = async ({
 
   const signatureHeaders = await createSignatureHeaders({
     request,
-    privateKey,
-    keyId
+    ...signOptions
   })
 
   return {

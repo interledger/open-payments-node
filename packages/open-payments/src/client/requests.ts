@@ -1,7 +1,7 @@
 import { KeyObject } from 'crypto'
 import { ResponseValidator, isValidationError } from '@interledger/openapi'
 import { BaseDeps } from '.'
-import { createHeaders } from '@interledger/http-signature-utils'
+import { createHeaders, type Signer } from '@interledger/http-signature-utils'
 import { OpenPaymentsClientError } from './error'
 import { Logger } from 'pino'
 
@@ -240,6 +240,7 @@ interface CreateHttpClientArgs {
 
 type AuthenticatedHttpClientArgs =
   | { privateKey: KeyObject; keyId: string }
+  | { signer: Signer; keyId: string }
   | { authenticatedRequestInterceptor: InterceptorFn }
 
 export type HttpClient = KyInstance
@@ -318,10 +319,8 @@ export const createHttpClient = async (
       }
     } else {
       requestInterceptor = (request) => {
-        const { privateKey, keyId } = requestSigningArgs
-
         if (requestShouldBeAuthorized(request)) {
-          return signRequest(request, { privateKey, keyId })
+          return signRequest(request, requestSigningArgs)
         }
 
         return request
@@ -347,27 +346,40 @@ export const signRequest = async (
   request: Request,
   args: {
     privateKey?: KeyObject
+    signer?: Signer
     keyId?: string
   }
 ): Promise<Request> => {
-  const { privateKey, keyId } = args
+  const { privateKey, signer, keyId } = args
 
-  if (!privateKey || !keyId) {
+  if (!keyId) {
     return request
   }
 
   const requestBody = request.body ? await request.clone().json() : undefined // Request body can only ever be read once, so we clone the original request
+  const requestToSign = {
+    method: request.method.toUpperCase(),
+    url: request.url,
+    headers: Object.fromEntries(request.headers.entries()),
+    body: requestBody ? JSON.stringify(requestBody) : undefined
+  }
 
-  const contentAndSigHeaders = await createHeaders({
-    request: {
-      method: request.method.toUpperCase(),
-      url: request.url,
-      headers: Object.fromEntries(request.headers.entries()),
-      body: requestBody ? JSON.stringify(requestBody) : undefined
-    },
-    privateKey,
-    keyId
-  })
+  let contentAndSigHeaders: Awaited<ReturnType<typeof createHeaders>>
+  if (signer) {
+    contentAndSigHeaders = await createHeaders({
+      request: requestToSign,
+      signer,
+      keyId
+    })
+  } else if (privateKey) {
+    contentAndSigHeaders = await createHeaders({
+      request: requestToSign,
+      privateKey,
+      keyId
+    })
+  } else {
+    return request
+  }
 
   if (requestBody) {
     request.headers.set(
