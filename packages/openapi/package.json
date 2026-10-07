@@ -5,10 +5,10 @@
   "author": "Interledger Tech Team <tech@interledger.org>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/interledger/open-payments.git",
+    "url": "https://github.com/interledger/open-payments-node.git",
     "directory": "packages/openapi"
   },
-  "homepage": "https://github.com/interledger/open-payments/tree/main/packages/openapi#readme",
+  "homepage": "https://github.com/interledger/open-payments-node/tree/main/packages/openapi#readme",
   "publishConfig": {
     "access": "public"
   },

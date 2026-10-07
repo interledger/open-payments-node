@@ -1,7 +1,7 @@
 {
   "private": true,
   "license": "Apache-2.0",
-  "repository": "https://github.com/interledger/open-payments",
+  "repository": "https://github.com/interledger/open-payments-node",
   "engines": {
     "pnpm": "^11.22",
     "node": "24"
