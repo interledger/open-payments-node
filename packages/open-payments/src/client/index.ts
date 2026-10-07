@@ -253,7 +253,7 @@ export interface UnauthenticatedClient {
  * Creates an OpenPayments client that is only able to make requests for public fields.
  */
 export const createUnauthenticatedClient = async (
-  args: CreateUnauthenticatedClientArgs
+  args: CreateUnauthenticatedClientArgs = {}
 ): Promise<UnauthenticatedClient> => {
   const { resourceServerOpenApi, walletAddressServerOpenApi, ...baseDeps } =
     await createUnauthenticatedDeps(args)
