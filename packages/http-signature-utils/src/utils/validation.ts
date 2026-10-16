@@ -1,6 +1,7 @@
 import { RequestLike } from './signatures'
 import { verifyContentDigest } from 'httpbis-digest-headers'
 import { JWK } from './jwk'
+import { decodeBase64 } from './internal'
 
 export function validateSignatureHeaders(request: RequestLike): boolean {
   const sig = request.headers['signature']
@@ -40,8 +41,9 @@ export async function validateSignature(
     false,
     ['verify']
   )
-  const data = Buffer.from(challenge)
-  const signature = Buffer.from(sig.replace('sig1=', ''), 'base64')
+  const data = new TextEncoder().encode(challenge)
+  // signature is wrapped as `sig1=:<base64>:` per RFC 9421
+  const signature = decodeBase64(sig.replace(/^sig1=:|:$/g, ''))
   return crypto.subtle.verify({ name: 'Ed25519' }, publicKey, signature, data)
 }
 

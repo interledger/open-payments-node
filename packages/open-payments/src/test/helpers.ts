@@ -1,4 +1,3 @@
-import { generateKeyPairSync } from 'crypto'
 import createLogger from 'pino'
 import { createHttpClient } from '../client/requests'
 import {
@@ -34,15 +33,24 @@ export const keyId = 'default-key-id'
 
 export const getDefaultHttpClient = async (): ReturnType<
   typeof createHttpClient
-> =>
-  createHttpClient({
+> => {
+  const keyPair = await crypto.subtle.generateKey('Ed25519', true, [
+    'sign',
+    'verify'
+  ])
+  if (!('privateKey' in keyPair)) {
+    throw new Error('expected a CryptoKeyPair')
+  }
+
+  return createHttpClient({
     logger: silentLogger,
     requestTimeoutMs: 1000,
     requestSigningArgs: {
       keyId,
-      privateKey: generateKeyPairSync('ed25519').privateKey
+      privateKey: keyPair.privateKey
     }
   })
+}
 
 export const mockOpenApiResponseValidators = () => ({
   successfulValidator: ((data: unknown): data is unknown =>

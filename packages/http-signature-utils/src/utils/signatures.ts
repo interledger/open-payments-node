@@ -1,5 +1,10 @@
 import { type KeyLike } from 'crypto'
-import { httpbis, createSigner, Request } from 'http-message-signatures'
+import {
+  httpbis,
+  createSigner,
+  Request,
+  SigningKey
+} from 'http-message-signatures'
 
 export interface RequestLike extends Request {
   body?: string
@@ -7,9 +12,26 @@ export interface RequestLike extends Request {
 
 export interface SignOptions {
   request: RequestLike
-  privateKey: KeyLike
+  privateKey: KeyLike | CryptoKey
   keyId: string
 }
+
+const createWebCryptoSigner = (
+  privateKey: CryptoKey,
+  keyId: string
+): SigningKey => ({
+  id: keyId,
+  alg: 'ed25519',
+  sign: async (data: Buffer) => {
+    const signature = await crypto.subtle.sign(
+      { name: 'Ed25519' },
+      privateKey,
+      new Uint8Array(data)
+    )
+    // http-message-signatures requires a Buffer here
+    return Buffer.from(signature)
+  }
+})
 
 export interface SignatureHeaders {
   Signature: string
@@ -29,7 +51,10 @@ export const createSignatureHeaders = async ({
     components.push('content-digest', 'content-length', 'content-type')
   }
 
-  const signingKey = createSigner(privateKey, 'ed25519', keyId)
+  const signingKey =
+    privateKey instanceof CryptoKey
+      ? createWebCryptoSigner(privateKey, keyId)
+      : createSigner(privateKey, 'ed25519', keyId)
 
   const { headers } = await httpbis.signMessage(
     {

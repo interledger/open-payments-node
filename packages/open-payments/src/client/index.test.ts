@@ -64,6 +64,26 @@ describe('Client', (): void => {
       ).resolves.toBeDefined()
     })
 
+    test('properly loads key with privateKey as CryptoKey', async (): Promise<void> => {
+      const keyPair = await crypto.subtle.generateKey('Ed25519', true, [
+        'sign',
+        'verify'
+      ])
+      if (!('privateKey' in keyPair)) {
+        throw new Error('expected a CryptoKeyPair')
+      }
+      const { privateKey } = keyPair
+
+      await expect(
+        createAuthenticatedClient({
+          logger: silentLogger,
+          keyId: 'keyid-1',
+          walletAddressUrl: 'http://localhost:1000/.well-known/pay',
+          privateKey
+        })
+      ).resolves.toBeDefined()
+    })
+
     test('properly creates the client if a custom authenticated request interceptor is passed', async (): Promise<void> => {
       await expect(
         createAuthenticatedClient({

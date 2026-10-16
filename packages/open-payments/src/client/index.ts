@@ -94,7 +94,15 @@ export interface CollectionRequestArgs
   walletAddress: string
 }
 
-const parseKey = (deps: { logger: Logger }, privateKey: KeyLike): KeyObject => {
+const parseKey = (
+  deps: { logger: Logger },
+  privateKey: KeyLike | CryptoKey
+): KeyObject | CryptoKey => {
+  if (privateKey instanceof CryptoKey) {
+    deps.logger.debug('Loading key from CryptoKey')
+    return privateKey
+  }
+
   if (privateKey instanceof KeyObject) {
     deps.logger.debug('Loading key from KeyObject')
     return privateKey
@@ -184,7 +192,7 @@ const createAuthenticatedClientDeps = async ({
       }
     })
   } else {
-    let privateKey: KeyObject
+    let privateKey: KeyObject | CryptoKey
     try {
       privateKey = parseKey({ logger }, args.privateKey)
     } catch (error) {
@@ -287,7 +295,7 @@ interface BaseAuthenticatedClientArgs extends CreateUnauthenticatedClientArgs {
 
 interface PrivateKeyConfig {
   /** The private EdDSA-Ed25519 key (or the relative or absolute path to the key) with which requests will be signed */
-  privateKey: string | KeyLike
+  privateKey: string | KeyLike | CryptoKey
   /** The key identifier referring to the private key */
   keyId: string
 }
