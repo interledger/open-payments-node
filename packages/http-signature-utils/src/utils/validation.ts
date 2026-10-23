@@ -86,6 +86,15 @@ function getSigInputComponents(sigInput: string): string[] | null {
     : null
 }
 
+function requestHasBody(request: RequestLike): boolean {
+  if (request.body == null) return false
+  if (typeof request.body === 'string') return request.body.length > 0
+  if (typeof request.body === 'object') {
+    return Object.keys(request.body as object).length > 0
+  }
+  return true
+}
+
 function validateSigInputComponents(
   sigInputComponents: string[],
   request: RequestLike
@@ -97,18 +106,25 @@ function validateSigInputComponents(
     if (component !== component.toLowerCase()) return false
   }
 
-  const isValidContentDigest =
-    !sigInputComponents.includes('content-digest') ||
-    (!!request.headers['content-digest'] &&
+  const hasBody = requestHasBody(request)
+  // Open Payments / GNAP: when a body is present, content-digest MUST be covered
+  // and verified. Omitting it previously failed open (body could be swapped).
+  // Sibling of interledger/open-payments-go#50.
+  const isValidContentDigest = !hasBody
+    ? !sigInputComponents.includes('content-digest') ||
+      (!!request.headers['content-digest'] &&
+        verifyContentDigest(
+          request.body as string,
+          request.headers['content-digest'] as string
+        ))
+    : sigInputComponents.includes('content-digest') &&
+      !!request.headers['content-digest'] &&
       !!request.headers['content-length'] &&
       !!request.headers['content-type'] &&
-      request.body &&
-      Object.keys(request.body).length > 0 &&
-      sigInputComponents.includes('content-digest') &&
       verifyContentDigest(
-        request.body,
+        request.body as string,
         request.headers['content-digest'] as string
-      ))
+      )
 
   return !(
     !isValidContentDigest ||
