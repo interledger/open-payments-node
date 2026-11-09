@@ -54,6 +54,53 @@ describe('Signature Verification', (): void => {
     }
   )
 
+  test('does not validate a signature against a different public key', async (): Promise<void> => {
+    const request: RequestLike = {
+      headers: { authorization: 'GNAP test-access-token' },
+      method: 'GET',
+      url: 'http://example.com/test'
+    }
+    const contentAndSigHeaders = await createHeaders({
+      request,
+      privateKey: testKeys.privateKey,
+      keyId: testKeys.publicKey.kid
+    })
+    const lowerHeaders = Object.fromEntries(
+      Object.entries(contentAndSigHeaders).map(([k, v]) => [k.toLowerCase(), v])
+    )
+    request.headers = { ...request.headers, ...lowerHeaders }
+
+    const otherKeys = generateTestKeys()
+
+    expect(validateSignatureHeaders(request)).toEqual(true)
+    await expect(
+      validateSignature(otherKeys.publicKey, request)
+    ).resolves.toEqual(false)
+  })
+
+  test('does not validate a signature over a tampered request body', async (): Promise<void> => {
+    const request: RequestLike = {
+      headers: {},
+      method: 'GET',
+      url: 'http://example.com/test',
+      body: JSON.stringify({ foo: 'bar' })
+    }
+    const contentAndSigHeaders = await createHeaders({
+      request,
+      privateKey: testKeys.privateKey,
+      keyId: testKeys.publicKey.kid
+    })
+    const lowerHeaders = Object.fromEntries(
+      Object.entries(contentAndSigHeaders).map(([k, v]) => [k.toLowerCase(), v])
+    )
+    request.headers = { ...request.headers, ...lowerHeaders }
+    request.body = JSON.stringify({ foo: 'baz' })
+
+    await expect(
+      validateSignature(testKeys.publicKey, request)
+    ).resolves.toEqual(false)
+  })
+
   test.each`
     title                                                                               | sigInputHeader
     ${'fails if a component is not in lower case'}                                      | ${'sig1=("@METHOD" "@target-uri" "content-digest" "content-length" "content-type" "authorization");created=1618884473;keyid="gnap-key"'}
