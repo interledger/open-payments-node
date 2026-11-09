@@ -1,6 +1,15 @@
 import { generateKeyPairSync } from 'crypto'
 import { generateJwk } from './jwk'
 
+const mlDsaSupported = ((): boolean => {
+  try {
+    generateKeyPairSync('ml-dsa-65')
+    return true
+  } catch {
+    return false
+  }
+})()
+
 describe('jwk', (): void => {
   describe('generateJwk', (): void => {
     test('properly generates jwk', async (): Promise<void> => {
@@ -40,5 +49,17 @@ describe('jwk', (): void => {
         })
       ).toThrow('Key is not EdDSA-Ed25519')
     })
+
+    ;(mlDsaSupported ? test : test.skip)(
+      'throws if provided key is a post-quantum ML-DSA key',
+      async (): Promise<void> => {
+        expect(() =>
+          generateJwk({
+            keyId: 'keyid',
+            privateKey: generateKeyPairSync('ml-dsa-65').privateKey
+          })
+        ).toThrow('Failed to derive public key')
+      }
+    )
   })
 })
