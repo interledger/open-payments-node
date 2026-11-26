@@ -1,5 +1,22 @@
 # @interledger/open-payments
 
+## 7.4.1
+
+### Patch Changes
+
+- 43e977a: Fixed `createUnauthenticatedClient` throwing when called without arguments.
+- 9da7d9e: Removed the `uuid` dependency in favor of the global `crypto.randomUUID()` API.
+- 9580e47: Added support for signing requests with a Web Crypto `CryptoKey` as an alternative to a Node `KeyObject`/`Buffer`/PEM string. Existing usage is unaffected.
+  Use `TextEncoder` instead of Node.js `Buffer`.
+- 77c15dc: Updated dependencies (`ky`, `pino`, `uuid`) and dev dependencies, and regenerated OpenAPI types from the latest specs.
+- Updated dependencies [77c15dc]
+- Updated dependencies [9da7d9e]
+- Updated dependencies [77c15dc]
+- Updated dependencies [9580e47]
+- Updated dependencies [eb2a9a0]
+  - @interledger/http-signature-utils@2.0.4
+  - @interledger/openapi@2.0.5
+
 ## 7.4.0
 
 ### Minor Changes

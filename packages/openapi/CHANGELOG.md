@@ -1,5 +1,12 @@
 # @interledger/openapi
 
+## 2.0.5
+
+### Patch Changes
+
+- 9da7d9e: Removed the `uuid` dependency in favor of the global `crypto.randomUUID()` API.
+- 77c15dc: Updated dependencies (`ajv`, `koa`, `openapi-request-validator`, and related `openapi-*` packages) and dev dependencies.
+
 ## 2.0.4
 
 ### Patch Changes
