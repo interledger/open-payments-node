@@ -1,4 +1,8 @@
-import { createAuthenticatedClient, OpenPaymentsClientError } from '.'
+import {
+  createAuthenticatedClient,
+  createUnauthenticatedClient,
+  OpenPaymentsClientError
+} from '.'
 import fs from 'fs'
 import assert from 'assert'
 import { generateKeyPairSync } from 'crypto'
@@ -159,5 +163,11 @@ describe('Client', (): void => {
         }
       }
     )
+  })
+
+  describe('createUnauthenticatedClient', (): void => {
+    test('creates client without arguments', async (): Promise<void> => {
+      await expect(createUnauthenticatedClient()).resolves.toBeDefined()
+    })
   })
 })
