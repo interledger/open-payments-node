@@ -239,7 +239,7 @@ interface CreateHttpClientArgs {
 }
 
 type AuthenticatedHttpClientArgs =
-  | { privateKey: KeyObject; keyId: string }
+  | { privateKey: KeyObject | CryptoKey; keyId: string }
   | { authenticatedRequestInterceptor: InterceptorFn }
 
 export type HttpClient = KyInstance
@@ -346,7 +346,7 @@ export const requestShouldBeAuthorized = (request: Request) =>
 export const signRequest = async (
   request: Request,
   args: {
-    privateKey?: KeyObject
+    privateKey?: KeyObject | CryptoKey
     keyId?: string
   }
 ): Promise<Request> => {

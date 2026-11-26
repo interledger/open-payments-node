@@ -19,7 +19,7 @@ const createContentHeaders = (body: string): ContentHeaders => {
       JSON.stringify(JSON.parse(body)),
       ['sha-512']
     ),
-    'Content-Length': Buffer.from(body as string, 'utf-8').length.toString(),
+    'Content-Length': new TextEncoder().encode(body).length.toString(),
     'Content-Type': 'application/json'
   }
 }

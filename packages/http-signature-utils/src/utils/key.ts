@@ -1,5 +1,6 @@
 import * as crypto from 'crypto'
 import * as fs from 'fs'
+import { decodeBase64 } from './internal'
 
 /**
  * Loads a EdDSA-Ed25519 private key.
@@ -93,7 +94,7 @@ export function loadOrGenerateKey(
  *
  */
 export function loadBase64Key(base64Key: string): crypto.KeyObject | undefined {
-  const privateKey = Buffer.from(base64Key, 'base64').toString('utf-8')
+  const privateKey = new TextDecoder().decode(decodeBase64(base64Key))
   const key = crypto.createPrivateKey(privateKey)
   if (isKeyEd25519(key)) {
     return key
