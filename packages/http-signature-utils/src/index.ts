@@ -6,6 +6,10 @@ export {
   loadOrGenerateKey,
   loadBase64Key
 } from './utils/key'
-export { createSignatureHeaders, type RequestLike } from './utils/signatures'
+export {
+  createSignatureHeaders,
+  type RequestLike,
+  type Signer
+} from './utils/signatures'
 export { validateSignatureHeaders, validateSignature } from './utils/validation'
 export { generateTestKeys, TestKeys } from './test-utils/keys'

@@ -1,4 +1,4 @@
-import { loadKey } from '@interledger/http-signature-utils'
+import { loadKey, type Signer } from '@interledger/http-signature-utils'
 import fs from 'fs'
 import { OpenAPI } from '@interledger/openapi'
 import path from 'path'
@@ -164,6 +164,7 @@ const createAuthenticatedClientDeps = async ({
   ...args
 }:
   | CreateAuthenticatedClientArgs
+  | CreateAuthenticatedClientWithSignerArgs
   | CreateAuthenticatedClientWithReqInterceptorArgs): Promise<AuthenticatedClientDeps> => {
   const logger =
     args.logger ??
@@ -181,6 +182,16 @@ const createAuthenticatedClientDeps = async ({
         args.requestTimeoutMs ?? config.DEFAULT_REQUEST_TIMEOUT_MS,
       requestSigningArgs: {
         authenticatedRequestInterceptor: args.authenticatedRequestInterceptor
+      }
+    })
+  } else if ('signer' in args) {
+    httpClient = await createHttpClient({
+      logger,
+      requestTimeoutMs:
+        args.requestTimeoutMs ?? config.DEFAULT_REQUEST_TIMEOUT_MS,
+      requestSigningArgs: {
+        signer: args.signer,
+        keyId: args.keyId
       }
     })
   } else {
@@ -292,6 +303,13 @@ interface PrivateKeyConfig {
   keyId: string
 }
 
+interface SignerConfig {
+  /** The external signer with which requests will be signed */
+  signer: Signer
+  /** The key identifier referring to the signer */
+  keyId: string
+}
+
 interface InterceptorConfig {
   /** The custom authenticated request interceptor to use. */
   authenticatedRequestInterceptor: InterceptorFn
@@ -299,6 +317,9 @@ interface InterceptorConfig {
 
 export type CreateAuthenticatedClientArgs = BaseAuthenticatedClientArgs &
   PrivateKeyConfig
+
+export type CreateAuthenticatedClientWithSignerArgs =
+  BaseAuthenticatedClientArgs & SignerConfig
 
 export type CreateAuthenticatedClientWithReqInterceptorArgs =
   BaseAuthenticatedClientArgs & InterceptorConfig
@@ -322,6 +343,13 @@ export async function createAuthenticatedClient(
   args: CreateAuthenticatedClientArgs
 ): Promise<AuthenticatedClient>
 /**
+ * Creates an Open Payments client that signs authenticated requests with an external signer.
+ * This is useful for KMS, HSM, Secure Enclave, or other non-extractable key deployments.
+ */
+export async function createAuthenticatedClient(
+  args: CreateAuthenticatedClientWithSignerArgs
+): Promise<AuthenticatedClient>
+/**
  * @experimental The `authenticatedRequestInterceptor` feature is currently experimental and might be removed
  * in upcoming versions. Use at your own risk! It offers the capability to add a custom method for
  * generating HTTP signatures. It is recommended to create the authenticated client with the `privateKey`
@@ -334,17 +362,27 @@ export async function createAuthenticatedClient(
 export async function createAuthenticatedClient(
   args:
     | CreateAuthenticatedClientArgs
+    | CreateAuthenticatedClientWithSignerArgs
     | CreateAuthenticatedClientWithReqInterceptorArgs
 ): Promise<AuthenticatedClient> {
+  const authConfigCount = [
+    'authenticatedRequestInterceptor' in args,
+    'privateKey' in args,
+    'signer' in args
+  ].filter(Boolean).length
+  const hasKeyId = 'keyId' in args && !!args.keyId
+  const needsKeyId = 'privateKey' in args || 'signer' in args
+
   if (
-    'authenticatedRequestInterceptor' in args &&
-    ('privateKey' in args || 'keyId' in args)
+    authConfigCount !== 1 ||
+    (needsKeyId && !hasKeyId) ||
+    ('authenticatedRequestInterceptor' in args && 'keyId' in args)
   ) {
     throw new OpenPaymentsClientError(
       'Invalid arguments when creating authenticated client.',
       {
         description:
-          'Both `authenticatedRequestInterceptor` and `privateKey`/`keyId` were provided. Please use only one of these options.'
+          'Exactly one of `authenticatedRequestInterceptor`, `privateKey`/`keyId`, or `signer`/`keyId` must be provided.'
       }
     )
   }

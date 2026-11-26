@@ -170,10 +170,65 @@ export interface components {
         };
         /**
          * DID Document
-         * @description A DID Document using JSON encoding
+         * @description A W3C DID Document using JSON encoding
          */
         "did-document": {
+            "@context"?: string | string[];
+            /**
+             * @description The DID subject identifier.
+             * @example did:web:example.com
+             */
+            id: string;
+            /** @description An entity that is authorized to make changes to the DID document. */
+            controller?: string | string[];
+            /** @description A set of verification methods associated with the DID subject. */
+            verificationMethod?: components["schemas"]["did-verification-method"][];
+            /** @description Authentication verification relationships. */
+            authentication?: (string | components["schemas"]["did-verification-method"])[];
+            /** @description Assertion method verification relationships. */
+            assertionMethod?: (string | components["schemas"]["did-verification-method"])[];
+            /** @description Capability invocation verification relationships. */
+            capabilityInvocation?: (string | components["schemas"]["did-verification-method"])[];
+            /** @description Capability delegation verification relationships. */
+            capabilityDelegation?: (string | components["schemas"]["did-verification-method"])[];
+            /** @description Key agreement verification relationships. */
+            keyAgreement?: (string | components["schemas"]["did-verification-method"])[];
+            /** @description Services associated with the DID subject. */
+            service?: components["schemas"]["did-service"][];
+            /** @description Alternative identifiers for the DID subject. */
+            alsoKnownAs?: string[];
+        } & {
             [key: string]: unknown;
+        };
+        /**
+         * Verification Method
+         * @description A verification method associated with a DID subject.
+         */
+        "did-verification-method": {
+            /** @description The identifier of the verification method. */
+            id: string;
+            /** @description The type of the verification method. */
+            type: string;
+            /** @description The controller of the verification method. */
+            controller: string;
+            /** @description A JSON Web Key representation of the public key. */
+            publicKeyJwk?: {
+                [key: string]: unknown;
+            };
+            /** @description A Multibase-encoded public key. */
+            publicKeyMultibase?: string;
+        };
+        /**
+         * DID Service
+         * @description A service endpoint associated with a DID subject.
+         */
+        "did-service": {
+            /** @description The identifier of the service. */
+            id: string;
+            /** @description The type of the service. */
+            type: string;
+            /** @description The service endpoint URI or URIs. */
+            serviceEndpoint: string | string[];
         };
     };
     responses: never;
