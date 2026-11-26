@@ -48,7 +48,7 @@ describe('Signature Verification', (): void => {
       )
       request.headers = { ...request.headers, ...lowerHeaders }
 
-      expect(validateSignatureHeaders(request)).toEqual(true)
+      await expect(validateSignatureHeaders(request)).resolves.toEqual(true)
       await expect(
         validateSignature(testKeys.publicKey, request)
       ).resolves.toEqual(true)
@@ -90,7 +90,7 @@ describe('Signature Verification', (): void => {
       x: jwk.x as string
     }
 
-    expect(validateSignatureHeaders(request)).toEqual(true)
+    await expect(validateSignatureHeaders(request)).resolves.toEqual(true)
     await expect(validateSignature(clientKey, request)).resolves.toEqual(true)
   })
 
@@ -105,12 +105,13 @@ describe('Signature Verification', (): void => {
     'validates signature header and $title',
     async ({ sigInputHeader }): Promise<void> => {
       const testRequestBody = JSON.stringify({ foo: 'bar' })
+      const contentDigest = await createContentDigestHeader(testRequestBody, [
+        'SHA-512'
+      ])
       const request = {
         headers: {
           'content-type': 'application/json',
-          'content-digest': createContentDigestHeader(testRequestBody, [
-            'sha-512'
-          ]),
+          'content-digest': contentDigest,
           'content-length': '1234',
           'signature-input': sigInputHeader,
           authorization: 'GNAP test-access-token'
@@ -119,7 +120,7 @@ describe('Signature Verification', (): void => {
         url: 'http://example.com/test',
         body: testRequestBody
       }
-      expect(validateSignatureHeaders(request)).toBe(false)
+      await expect(validateSignatureHeaders(request)).resolves.toBe(false)
     }
   )
 })

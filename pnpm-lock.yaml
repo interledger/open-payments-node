@@ -69,8 +69,8 @@ importers:
         specifier: ^1.0.6
         version: 1.0.6
       httpbis-digest-headers:
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^2.0.0
+        version: 2.0.0
     devDependencies:
       '@types/node':
         specifier: ^26.3.0
@@ -1869,8 +1869,9 @@ packages:
   http-message-signatures@1.0.6:
     resolution: {integrity: sha512-mGaW/gs0WyP1X4wcc0iHguoDuv/LGyGLbvn8NWgbSdR+opFXKncrNiwQO8bN5rZ5j0z9HrwrRj33CzIK5dhGXA==}
 
-  httpbis-digest-headers@1.0.0:
-    resolution: {integrity: sha512-RpaFuZD3tG8wtsvjDv1u7O8wAvfpAxS20F3CrFPZOMn+IBb7E7yiqlN5Tks4E5tBEnTdpMOD151rJsUv03sAIg==}
+  httpbis-digest-headers@2.0.0:
+    resolution: {integrity: sha512-bTXwfKFApQi/kz94xX2Nq47MDjULbfBbm42SeQxPvM1qrLRksK7yZ1kGiYpSV0FnPiVVhZtoKLT9pzeg0Tu1Xg==}
+    engines: {node: '>=24.0.0'}
 
   https-proxy-agent@7.0.6:
     resolution: {integrity: sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==}
@@ -2979,9 +2980,6 @@ packages:
   strip-json-comments@3.1.1:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
-
-  structured-headers@0.5.0:
-    resolution: {integrity: sha512-oLnmXSsjhud+LxRJpvokwP8ImEB2wTg8sg30buwfVViKMuluTv3BlOJHUX9VW9pJ2nQOxmx87Z0kB86O4cphag==}
 
   structured-headers@2.0.3:
     resolution: {integrity: sha512-4g5yxhlDMClRwCcfKfLeS7Z8yAVdOWGDADwm80Poh1iReU2KVKLGBlqwpHWJ2qovq0+ZIf1atAEO1eua2o9Rgg==}
@@ -5285,9 +5283,9 @@ snapshots:
     dependencies:
       structured-headers: 2.0.3
 
-  httpbis-digest-headers@1.0.0:
+  httpbis-digest-headers@2.0.0:
     dependencies:
-      structured-headers: 0.5.0
+      structured-headers: 2.0.3
 
   https-proxy-agent@7.0.6(supports-color@10.2.2):
     dependencies:
@@ -6539,8 +6537,6 @@ snapshots:
   strip-json-comments@2.0.1: {}
 
   strip-json-comments@3.1.1: {}
-
-  structured-headers@0.5.0: {}
 
   structured-headers@2.0.3: {}
 
