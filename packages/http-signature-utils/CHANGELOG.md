@@ -1,5 +1,15 @@
 # @interledger/http-signature-utils
 
+## 2.0.4
+
+### Patch Changes
+
+- 77c15dc: Updated dependencies (`http-message-signatures`, `jose`, `uuid`) and dev dependencies.
+- 9da7d9e: Removed the `uuid` dependency in favor of the global `crypto.randomUUID()` API.
+- 9580e47: Added support for signing requests with a Web Crypto `CryptoKey` as an alternative to a Node `KeyObject`/`Buffer`/PEM string. Existing usage is unaffected.
+  Use `TextEncoder` instead of Node.js `Buffer`.
+- eb2a9a0: Removed the `jose` dependency in favor of the global `crypto.subtle` (Web Crypto) API.
+
 ## 2.0.3
 
 ### Patch Changes
